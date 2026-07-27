@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Health Score — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="dashboard-page">
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="healthscore_title">Your Health Score</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="healthscore_subtitle">One combined number from everything you track — nutrition, exercise, sleep, hydration, and BMI.</p>
+
+        <!-- Big score -->
+        <div class="dashboard-hero text-center mb-32">
+          <span class="eyebrow" data-i18n="healthscore_overall">❤️ Overall</span>
+          <div class="mt-16" id="scoreBig" style="font-family:var(--font-display);font-size:4rem;font-weight:700;line-height:1;">—</div>
+          <div class="text-sm text-muted mt-8" id="scoreOutOf" data-i18n="healthscore_out_of">out of 100</div>
+          <div class="text-sm mt-16" id="scoreMessage" style="max-width:480px;margin:0 auto;"></div>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="grid" style="grid-template-columns:1fr;gap:16px;" id="breakdownGrid">
+
+          <div class="card" data-component="nutrition">
+            <div class="flex-between">
+              <div class="flex" style="gap:12px;">
+                <span class="stat-icon icon-mint" style="margin:0;width:44px;height:44px;font-size:1.2rem;">🥗</span>
+                <div>
+                  <div style="font-weight:700;" data-i18n="healthscore_nutrition">Nutrition</div>
+                  <div class="text-sm text-muted" data-i18n="healthscore_nutrition_pct">30% of score</div>
+                </div>
+              </div>
+              <div class="mono" style="font-weight:700;font-size:1.3rem;" data-value>—</div>
+            </div>
+            <div class="progress-track mt-16"><div class="progress-fill" data-bar style="width:0%;background:var(--gradient-mint);"></div></div>
+            <div class="text-sm text-muted mt-8" data-note></div>
+          </div>
+
+          <div class="card" data-component="exercise">
+            <div class="flex-between">
+              <div class="flex" style="gap:12px;">
+                <span class="stat-icon icon-coral" style="margin:0;width:44px;height:44px;font-size:1.2rem;">🏃</span>
+                <div>
+                  <div style="font-weight:700;" data-i18n="healthscore_exercise">Exercise</div>
+                  <div class="text-sm text-muted" data-i18n="healthscore_exercise_pct">25% of score &middot; last 7 days</div>
+                </div>
+              </div>
+              <div class="mono" style="font-weight:700;font-size:1.3rem;" data-value>—</div>
+            </div>
+            <div class="progress-track mt-16"><div class="progress-fill" data-bar style="width:0%;background:var(--color-coral);"></div></div>
+            <div class="text-sm text-muted mt-8" data-note></div>
+          </div>
+
+          <div class="card" data-component="sleep">
+            <div class="flex-between">
+              <div class="flex" style="gap:12px;">
+                <span class="stat-icon icon-blue" style="margin:0;width:44px;height:44px;font-size:1.2rem;">😴</span>
+                <div>
+                  <div style="font-weight:700;" data-i18n="healthscore_sleep">Sleep</div>
+                  <div class="text-sm text-muted" data-i18n="healthscore_sleep_pct">20% of score</div>
+                </div>
+              </div>
+              <div class="mono" style="font-weight:700;font-size:1.3rem;" data-value>—</div>
+            </div>
+            <div class="progress-track mt-16"><div class="progress-fill" data-bar style="width:0%;background:var(--color-secondary);"></div></div>
+            <div class="text-sm text-muted mt-8" data-note></div>
+          </div>
+
+          <div class="card" data-component="hydration">
+            <div class="flex-between">
+              <div class="flex" style="gap:12px;">
+                <span class="stat-icon icon-teal" style="margin:0;width:44px;height:44px;font-size:1.2rem;">💧</span>
+                <div>
+                  <div style="font-weight:700;" data-i18n="healthscore_hydration">Hydration</div>
+                  <div class="text-sm text-muted" data-i18n="healthscore_hydration_pct">15% of score &middot; today</div>
+                </div>
+              </div>
+              <div class="mono" style="font-weight:700;font-size:1.3rem;" data-value>—</div>
+            </div>
+            <div class="progress-track mt-16"><div class="progress-fill" data-bar style="width:0%;background:var(--color-primary);"></div></div>
+            <div class="text-sm text-muted mt-8" data-note></div>
+          </div>
+
+          <div class="card" data-component="bmi">
+            <div class="flex-between">
+              <div class="flex" style="gap:12px;">
+                <span class="stat-icon icon-amber" style="margin:0;width:44px;height:44px;font-size:1.2rem;">⚖️</span>
+                <div>
+                  <div style="font-weight:700;" data-i18n="healthscore_bmi">BMI</div>
+                  <div class="text-sm text-muted" data-i18n="healthscore_bmi_pct">10% of score</div>
+                </div>
+              </div>
+              <div class="mono" style="font-weight:700;font-size:1.3rem;" data-value>—</div>
+            </div>
+            <div class="progress-track mt-16"><div class="progress-fill" data-bar style="width:0%;background:var(--color-amber);"></div></div>
+            <div class="text-sm text-muted mt-8" data-note></div>
+          </div>
+
+        </div>
+
+        <div class="card mt-24" style="background:var(--color-primary-light);border-color:var(--color-border);">
+          <div class="text-sm"><strong data-i18n="healthscore_calc_note_label">How this is calculated:</strong> <span data-i18n="healthscore_calc_note_body">Nutrition 30% (today's logged meals vs. your nutrition plan) + Exercise 25% (workouts completed in the last 7 days) + Sleep 20% (latest logged hours vs. the 7–9h ideal) + Hydration 15% (today's water intake vs. your target) + BMI 10% (your latest BMI category). Any section with no data yet is left out and the rest are reweighted proportionally, so a fresh account isn't unfairly penalized.</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/health-score.js"></script>
+</body>
+</html>

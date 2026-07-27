@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Food Scanner — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+<style>
+  .scanner-tab-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .scanner-tab {
+    flex: 1;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform var(--transition), border-color var(--transition), background var(--transition);
+  }
+  .scanner-tab:hover { border-color: var(--color-primary); transform: translateY(-1px); }
+  .scanner-tab.scanner-tab-active {
+    background: var(--gradient-mint);
+    border-color: var(--color-primary);
+    color: #06231c;
+  }
+  .scanner-photo-input {
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .scanner-photo-input:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+  .scanner-photo-preview {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-top: 12px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="scanner_title">Food Scanner</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="scanner_subtitle">Type a food item, snap/upload a photo of your meal, or choose a sample food to see an instant nutrition summary.</p>
+
+        <div id="scannerGrid" class="grid grid-single" style="gap:24px; align-items:start;">
+          <div class="card">
+
+            <div class="scanner-tab-row">
+              <button type="button" class="scanner-tab scanner-tab-active" id="scannerTabSearchBtn" onclick="setScannerTab('search')" data-i18n="scanner_tab_search">🔍 Search by name</button>
+              <button type="button" class="scanner-tab" id="scannerTabPhotoBtn" onclick="setScannerTab('photo')" data-i18n="scanner_tab_photo">📷 Scan a photo</button>
+            </div>
+
+            <div id="scannerTabSearch">
+              <form id="scannerForm">
+                <div class="form-group">
+                  <label class="form-label" for="foodInput" data-i18n="scanner_food_name_label">Food name</label>
+                  <input class="form-input" type="text" id="foodInput" required data-i18n-placeholder="scanner_food_name_placeholder" placeholder="e.g. apple, chicken breast, sweet potato" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="scanBtn" data-i18n="scanner_scan_btn">Scan food</button>
+              </form>
+
+              <div class="mt-24">
+                <div class="text-sm text-muted" data-i18n="scanner_try_these">Try one of these:</div>
+                <div class="chips mt-12" style="display:flex;flex-wrap:wrap;gap:8px;">
+                  <button type="button" class="chip" data-food="apple" data-i18n="scanner_food_apple">Apple</button>
+                  <button type="button" class="chip" data-food="banana" data-i18n="scanner_food_banana">Banana</button>
+                  <button type="button" class="chip" data-food="salad" data-i18n="scanner_food_salad">Salad</button>
+                  <button type="button" class="chip" data-food="chicken" data-i18n="scanner_food_chicken">Chicken breast</button>
+                  <button type="button" class="chip" data-food="salmon" data-i18n="scanner_food_salmon">Salmon</button>
+                  <button type="button" class="chip" data-food="rice" data-i18n="scanner_food_rice">White rice</button>
+                  <button type="button" class="chip" data-food="sweet potato" data-i18n="scanner_food_sweetpotato">Sweet potato</button>
+                  <button type="button" class="chip" data-food="avocado" data-i18n="scanner_food_avocado">Avocado</button>
+                  <button type="button" class="chip" data-food="egg" data-i18n="scanner_food_egg">Egg</button>
+                  <button type="button" class="chip" data-food="pizza" data-i18n="scanner_food_pizza">Pizza slice</button>
+                  <button type="button" class="chip" data-food="sushi" data-i18n="scanner_food_sushi">Sushi</button>
+                  <button type="button" class="chip" data-food="almonds" data-i18n="scanner_food_almonds">Almonds</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="scannerTabPhoto" style="display:none;">
+              <form id="scannerPhotoForm">
+                <label class="scanner-photo-input" for="scannerPhotoInput">
+                  <span id="scannerPhotoLabel" data-i18n="scanner_tap_photo">📷 Tap to take or upload a photo of your food</span>
+                  <img id="scannerPhotoPreview" class="scanner-photo-preview" alt="Selected food photo preview" />
+                </label>
+                <input type="file" id="scannerPhotoInput" accept="image/*" capture="environment" style="display:none;" required />
+                <button type="submit" class="btn btn-primary btn-block mt-16" id="scanPhotoBtn" data-i18n="scanner_identify_btn">Identify Food</button>
+              </form>
+              <p class="text-sm text-muted mt-12" data-i18n="scanner_ai_note">AI estimates the food and calories from the photo — treat it as a helpful guess, not an exact measurement.</p>
+            </div>
+
+          </div>
+
+          <div class="card" id="scannerResult" style="display:none;">
+            <div class="text-center">
+              <span class="stat-icon icon-mint" id="foodIcon" style="margin:0 auto;">🍽️</span>
+              <div class="stat-value mt-16" id="foodName" data-i18n="scanner_food_default">Food</div>
+              <div class="text-sm text-muted mt-6" id="foodCategory" data-i18n="scanner_food_default">Food</div>
+              <div class="text-sm text-muted" id="foodServing"></div>
+            </div>
+            <div class="grid grid-2 mt-24" style="gap:12px;">
+              <div class="card" style="padding:16px;text-align:center;">
+                <span class="stat-icon icon-amber" style="width:36px;height:36px;font-size:1.1rem;margin:0 auto 8px;">🔥</span>
+                <div class="text-sm text-muted" data-i18n="scanner_calories">Calories</div>
+                <div id="calories" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-amber);">—</div>
+              </div>
+              <div class="card" style="padding:16px;text-align:center;">
+                <span class="stat-icon icon-blue" style="width:36px;height:36px;font-size:1.1rem;margin:0 auto 8px;">💪</span>
+                <div class="text-sm text-muted" data-i18n="scanner_protein">Protein</div>
+                <div id="protein" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-secondary);">—</div>
+              </div>
+              <div class="card" style="padding:16px;text-align:center;">
+                <span class="stat-icon icon-teal" style="width:36px;height:36px;font-size:1.1rem;margin:0 auto 8px;">🌾</span>
+                <div class="text-sm text-muted" data-i18n="scanner_carbs">Carbs</div>
+                <div id="carbs" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-primary);">—</div>
+              </div>
+              <div class="card" style="padding:16px;text-align:center;">
+                <span class="stat-icon icon-coral" style="width:36px;height:36px;font-size:1.1rem;margin:0 auto 8px;">🥑</span>
+                <div class="text-sm text-muted" data-i18n="scanner_fat">Fat</div>
+                <div id="fat" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-coral);">—</div>
+              </div>
+            </div>
+            <p class="text-sm mt-24 text-muted" id="foodNote" data-i18n="scanner_live_note">Live nutrition data from Spoonacular.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/scanner.js"></script>
+</body>
+</html>

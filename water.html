@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Water Intake — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="water_title">Water Intake Tracker</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="water_subtitle">Your recommended intake is calculated from your latest saved weight.</p>
+
+        <div class="grid grid-2" style="grid-template-columns:1fr 1fr;align-items:start;">
+          <div class="card text-center">
+            <div class="text-sm text-muted mb-8" data-i18n="water_today_progress">Today's progress</div>
+            <div class="stat-value" style="font-size:2.4rem;" id="waterConsumed">0 ml</div>
+            <div class="text-sm text-muted mb-16"><span data-i18n="water_of">of</span> <span id="waterGoal">2000 ml</span> <span data-i18n="water_goal_word">goal</span></div>
+            <div class="progress-track"><div class="progress-fill" id="waterProgressBar" style="width:0%;"></div></div>
+
+            <div class="grid grid-3 mt-24" style="gap:10px;">
+              <button class="btn btn-outline btn-sm" onclick="addWater(250)">+250ml</button>
+              <button class="btn btn-outline btn-sm" onclick="addWater(500)">+500ml</button>
+              <button class="btn btn-outline btn-sm" onclick="addWater(1000)">+1L</button>
+            </div>
+            <button class="btn btn-ghost btn-sm mt-16" onclick="resetWater()" data-i18n="water_reset_btn">Reset today</button>
+          </div>
+
+          <div class="card">
+            <h4 class="mb-16" data-i18n="water_recalculate_heading">Recalculate your goal</h4>
+            <div id="profileSelector"></div>
+            <form id="waterForm">
+              <div class="form-group">
+                <label class="form-label" for="wWeight" data-i18n="water_weight_label">Your weight (kg)</label>
+                <input class="form-input" type="number" id="wWeight" min="10" max="400" step="0.1" required placeholder="e.g. 65" />
+              </div>
+              <div class="form-hint mb-16" data-i18n="water_guideline_hint">We use ~35ml of water per kg of body weight as a general guideline.</div>
+              <button type="submit" id="waterBtn" class="btn btn-primary btn-block" data-i18n="water_update_btn">Update daily goal</button>
+            </form>
+            <div id="waterOtherResult" class="mt-16" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/profile-context.js"></script>
+  <script src="js/water.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nutrition Report — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <div class="nutrition-report-header">
+          <div>
+            <span class="eyebrow" data-i18n="nrep_eyebrow">Nutrition report</span>
+            <h1 class="mt-16" data-i18n="nrep_title">Nutrition Report</h1>
+            <p class="text-sm text-muted mt-12" data-i18n="nrep_subtitle">A polished summary of your current nutrition plan, progress, and clinical recommendations.</p>
+          </div>
+
+          <div class="report-meta">
+            <div class="text-sm text-muted"><span data-i18n="nrep_prepared_by">Prepared by</span> <strong>NutriHealth Nutritionist</strong></div>
+            <a href="nutrition.html" class="btn btn-outline btn-sm mt-16" data-i18n="nrep_back_to_calc">Back to Nutrition Calculator</a>
+          </div>
+        </div>
+
+        <div class="nutrition-report-banner">
+          <div class="report-banner-item">
+            <div class="text-sm text-muted" data-i18n="nrep_name">Name</div>
+            <strong id="reportUserName">—</strong>
+          </div>
+          <div class="report-banner-item">
+            <div class="text-sm text-muted" data-i18n="profile_age_label">Age</div>
+            <strong id="reportUserAge">—</strong>
+          </div>
+          <div class="report-banner-item">
+            <div class="text-sm text-muted" data-i18n="table_date">Date</div>
+            <strong id="reportDate">—</strong>
+          </div>
+        </div>
+
+        <div class="nutrition-report-card">
+          <div class="report-section-header">
+            <h4 data-i18n="nrep_plan_overview">Nutrition Plan Overview</h4>
+            <p class="text-sm text-muted"><span data-i18n="nrep_saved_on">Latest plan saved on</span> <strong id="planSavedDate">—</strong></p>
+          </div>
+
+          <div class="report-summary-grid mt-20">
+            <div class="report-metric">
+              <div class="metric-label" data-i18n="nutrition_daily_calorie_target">Daily calorie target</div>
+              <div class="metric-value" id="reportCalories">—</div>
+            </div>
+            <div class="report-metric">
+              <div class="metric-label" data-i18n="nrep_plan_progress">Plan progress</div>
+              <div class="metric-value" id="reportProgress">—</div>
+            </div>
+            <div class="report-metric">
+              <div class="metric-label" data-i18n="nrep_protein_target">Protein target</div>
+              <div class="metric-value" id="reportProtein">—</div>
+            </div>
+            <div class="report-metric">
+              <div class="metric-label" data-i18n="nrep_carbs_target">Carbs target</div>
+              <div class="metric-value" id="reportCarbs">—</div>
+            </div>
+            <div class="report-metric">
+              <div class="metric-label" data-i18n="nrep_fat_target">Fat target</div>
+              <div class="metric-value" id="reportFat">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card report-panel report-insight-card mt-24">
+          <div class="report-section-header">
+            <h4 data-i18n="nrep_clinical_observations">Clinical Observations</h4>
+          </div>
+          <ul class="report-details text-sm mt-16" id="reportDetails" style="padding-left:18px;line-height:1.9;">
+            <li data-i18n="nrep_details_placeholder">Your macro and calorie status will appear here once you have a plan and food log.</li>
+          </ul>
+        </div>
+
+        <div class="report-footer">
+          <a href="nutrition.html" class="report-footer-link" data-i18n="nrep_back_to_calc">Back to Nutrition Calculator</a>
+          <div class="text-sm text-muted"><span data-i18n="nrep_prepared_by">Prepared by</span> NutriHealth Nutritionist</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/nutrition-report.js"></script>
+</body>
+</html>

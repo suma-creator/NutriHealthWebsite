@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nutrition Plan — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nutrition_title">Nutrition Recommendation</h2>
+        <p class="text-sm mt-8 mb-16" data-i18n="nutrition_subtitle">Get a personalized daily calorie and macronutrient target.</p>
+        <a href="food-tracker.html" class="btn btn-outline btn-sm mb-24" data-i18n="nutrition_open_tracker">Open Food Tracker →</a>
+
+        <div id="nutritionGrid" class="grid nutrition-grid">
+          <div class="card nutrition-panel">
+            <h3 data-i18n="nutrition_calculator_heading">Nutrition calculator</h3>
+            <p class="text-sm text-muted mb-24" data-i18n="nutrition_calculator_hint">Start with your profile and daily activity to build a complete calorie and macronutrient target.</p>
+            <div id="profileSelector"></div>
+            <form id="nutritionForm">
+              <div class="grid grid-2" style="gap:16px;">
+                <div class="form-group">
+                  <label class="form-label" for="nAge" data-i18n="profile_age_label">Age</label>
+                  <input class="form-input" type="number" id="nAge" min="10" max="100" required placeholder="e.g. 25" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="nGender" data-i18n="profile_gender_label">Gender</label>
+                  <select class="form-select" id="nGender">
+                    <option value="male" data-i18n="profile_gender_male">Male</option>
+                    <option value="female" data-i18n="profile_gender_female">Female</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="nWeight" data-i18n="bmi_weight_label">Weight (kg)</label>
+                  <input class="form-input" type="number" id="nWeight" step="0.1" required placeholder="e.g. 65" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="nHeight" data-i18n="bmi_height_label">Height (cm)</label>
+                  <input class="form-input" type="number" id="nHeight" step="0.1" required placeholder="e.g. 170" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="nActivity" data-i18n="nutrition_activity_label">Activity level</label>
+                <select class="form-select" id="nActivity">
+                  <option value="1.2" data-i18n="activity_sedentary">Sedentary (little to no exercise)</option>
+                  <option value="1.375" data-i18n="activity_light">Lightly active (1-3 days/week)</option>
+                  <option value="1.55" selected data-i18n="activity_moderate">Moderately active (3-5 days/week)</option>
+                  <option value="1.725" data-i18n="activity_very">Very active (6-7 days/week)</option>
+                  <option value="1.9" data-i18n="activity_athlete">Athlete (twice a day)</option>
+                </select>
+              </div>
+              <div class="form-group">
+  <label class="form-label" for="nGoal" data-i18n="nutrition_goal_label">Nutrition Goal</label>
+
+  <select class="form-select" id="nGoal">
+    <optgroup label="Weight Goals" data-i18n-label="optgroup_weight_goals">
+      <option value="loss" data-i18n="ngoal_loss">⚖️ Weight Loss</option>
+      <option value="maintenance" data-i18n="ngoal_maintenance">🎯 Weight Maintenance</option>
+      <option value="gain" data-i18n="ngoal_gain">📈 Weight Gain</option>
+      <option value="muscleGain" data-i18n="ngoal_muscle_gain">💪 Muscle Gain</option>
+      <option value="fatLoss" data-i18n="ngoal_fat_loss">🔥 Fat Loss</option>
+    </optgroup>
+
+    <optgroup label="Diet Types" data-i18n-label="optgroup_diet_types">
+      <option value="highProtein" data-i18n="ngoal_high_protein">🥩 High Protein</option>
+      <option value="vegetarian" data-i18n="ngoal_vegetarian">🥦 Vegetarian</option>
+      <option value="vegan" data-i18n="ngoal_vegan">🌱 Vegan</option>
+      <option value="lowCarb" data-i18n="ngoal_low_carb">🥗 Low Carb</option>
+      <option value="keto" data-i18n="ngoal_keto">🥓 Keto</option>
+      <option value="mediterranean" data-i18n="ngoal_mediterranean">🫒 Mediterranean</option>
+      <option value="glutenFree" data-i18n="ngoal_gluten_free">🌾 Gluten Free</option>
+    </optgroup>
+
+    <optgroup label="Health Conditions" data-i18n-label="optgroup_health_conditions">
+      <option value="diabetic" data-i18n="ngoal_diabetic">🩺 Diabetic Friendly</option>
+      <option value="heartHealthy" data-i18n="ngoal_heart_healthy">❤️ Heart Healthy</option>
+      <option value="lowSodium" data-i18n="ngoal_low_sodium">🧂 Low Sodium</option>
+    </optgroup>
+
+    <optgroup label="Lifestyle" data-i18n-label="optgroup_lifestyle">
+      <option value="athlete" data-i18n="ngoal_athlete">🏋️ Athlete</option>
+      <option value="budget" data-i18n="ngoal_budget">💰 Budget Friendly</option>
+      <option value="quickMeals" data-i18n="ngoal_quick_meals">⚡ Quick Meals</option>
+    </optgroup>
+  </select>
+</div>
+              <button type="submit" id="nutritionBtn" class="btn btn-primary btn-block" data-i18n="nutrition_calculate_btn">Calculate my plan</button>
+            </form>
+          </div>
+
+          <div class="card nutrition-panel" id="nutritionResult" style="display:none;">
+            <div class="mb-24">
+              <h3 data-i18n="nutrition_plan_summary_heading">Plan summary</h3>
+              <p class="text-sm text-muted mt-8" data-i18n="nutrition_plan_summary_hint">Your personalized calorie and macronutrient goals will appear here after calculation.</p>
+            </div>
+
+            <div class="text-center mb-24">
+              <div class="text-sm text-muted" data-i18n="nutrition_daily_calorie_target">Daily calorie target</div>
+              <div class="stat-value" style="font-size:2.6rem;" id="rCalories">—</div>
+            </div>
+            <div class="grid grid-3 nutrition-summary-grid">
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="macro_protein">Protein</div>
+                <div class="mono" style="font-weight:700;" id="rProtein">—</div>
+              </div>
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="macro_carbs">Carbs</div>
+                <div class="mono" style="font-weight:700;" id="rCarbs">—</div>
+              </div>
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="macro_fat">Fat</div>
+                <div class="mono" style="font-weight:700;" id="rFat">—</div>
+              </div>
+            </div>
+            <div class="grid nutrition-remaining-grid mt-24">
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="remaining_calories">Remaining calories</div>
+                <div class="mono" style="font-weight:700;" id="rRemainingCalories">—</div>
+              </div>
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="remaining_protein">Remaining protein</div>
+                <div class="mono" style="font-weight:700;" id="rRemainingProtein">—</div>
+              </div>
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="remaining_carbs">Remaining carbs</div>
+                <div class="mono" style="font-weight:700;" id="rRemainingCarbs">—</div>
+              </div>
+              <div class="card stat-card" style="padding:18px;text-align:center;">
+                <div class="text-sm text-muted" data-i18n="remaining_fat">Remaining fat</div>
+                <div class="mono" style="font-weight:700;" id="rRemainingFat">—</div>
+              </div>
+            </div>
+            <a href="diet-plan.html" class="btn btn-outline btn-block mt-24" data-i18n="nutrition_generate_diet_plan">Generate a matching diet plan →</a>
+            <a href="nutrition-report.html" class="btn btn-primary btn-block mt-16" data-i18n="nutrition_open_report">Open Nutrition Report</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/profile-context.js"></script>
+  <script src="js/nutrition.js"></script>
+</body>
+</html>

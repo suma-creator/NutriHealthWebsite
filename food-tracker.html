@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Tracker — NutriHealth</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div id="pageLoader" class="page-loader">
+    <div class="loader-pulse"></div>
+</div>
+
+<div class="app-shell">
+
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+
+        <div id="topbarContainer"></div>
+
+        <div class="page-body">
+
+            <h2 data-i18n="nav_food_tracker">Food Tracker</h2>
+
+            <p class="text-sm mt-8 mb-24" data-i18n="ft_subtitle">
+                Add your meals and NutriHealth will automatically calculate calories,
+                protein, carbohydrates and fat.
+            </p>
+
+            <div class="grid grid-2" style="grid-template-columns:1fr 1.1fr;gap:24px;align-items:start;">
+
+                <!-- Left Card -->
+                <div class="card">
+
+                    <h4 data-i18n="ft_diary_heading">Food Diary</h4>
+
+                    <p class="text-sm text-muted mb-20" data-i18n="ft_diary_hint">
+                        Simply enter your food. Nutrition information will be filled automatically.
+                    </p>
+
+                    <form id="foodLogForm" class="grid grid-2" style="gap:16px;align-items:end;">
+
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="ft_meal_label">Meal</label>
+
+                            <select id="foodMeal" class="form-select">
+                                <option value="breakfast" data-i18n="meal_breakfast">Breakfast</option>
+                                <option value="lunch" data-i18n="meal_lunch">Lunch</option>
+                                <option value="dinner" data-i18n="meal_dinner">Dinner</option>
+                                <option value="snack" data-i18n="meal_snack">Snack</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="form-label" data-i18n="ft_food_item_label">Food Item</label>
+
+                            <input
+                                id="foodName"
+                                class="form-input"
+                                type="text"
+                                placeholder="Chicken Biryani, Apple, Pizza..." data-i18n-placeholder="ft_food_placeholder"
+                                required>
+
+                        </div>
+
+                        <div class="form-group" style="grid-column:span 2">
+
+                            <button
+                                id="foodAddBtn"
+                                class="btn btn-primary btn-block"
+                                type="submit">
+
+                                <span data-i18n="ft_add_food_btn">Add Food</span>
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <!-- Right Card -->
+                <div class="card">
+
+                    <h4 data-i18n="ft_today_journal_heading">Today's Food Journal</h4>
+
+                    <p class="text-sm text-muted mb-20" data-i18n="ft_journal_hint">
+                        Review all meals you've logged today.
+                    </p>
+
+                    <div id="foodLogList"></div>
+
+                    <div class="grid grid-4 mt-24" style="gap:12px;">
+
+                        <div class="card" style="padding:16px;text-align:center;">
+                            <span class="stat-icon icon-amber" style="margin:0 auto 8px;">🔥</span>
+                            <div class="text-sm text-muted" data-i18n="ft_calories">
+                                Calories
+                            </div>
+
+                            <div id="totalCalories" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-amber);">
+                                0 kcal
+                            </div>
+
+                        </div>
+
+                        <div class="card" style="padding:16px;text-align:center;">
+                            <span class="stat-icon icon-blue" style="margin:0 auto 8px;">💪</span>
+                            <div class="text-sm text-muted" data-i18n="macro_protein">
+                                Protein
+                            </div>
+
+                            <div id="totalProtein" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-secondary);">
+                                0 g
+                            </div>
+
+                        </div>
+
+                        <div class="card" style="padding:16px;text-align:center;">
+                            <span class="stat-icon icon-teal" style="margin:0 auto 8px;">🌾</span>
+                            <div class="text-sm text-muted" data-i18n="macro_carbs">
+                                Carbs
+                            </div>
+
+                            <div id="totalCarbs" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-primary);">
+                                0 g
+                            </div>
+
+                        </div>
+
+                        <div class="card" style="padding:16px;text-align:center;">
+                            <span class="stat-icon icon-coral" style="margin:0 auto 8px;">🥑</span>
+                            <div class="text-sm text-muted" data-i18n="macro_fat">
+                                Fat
+                            </div>
+
+                            <div id="totalFat" class="mono" style="font-weight:700;font-size:1.1rem;color:var(--color-coral);">
+                                0 g
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        id="clearFoodLog"
+                        class="btn btn-outline btn-block mt-24">
+
+                        <span data-i18n="ft_clear_log_btn">Clear Food Log</span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="config.js"></script>
+<script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/food-tracker.js"></script>
+
+<script>
+renderShell("food-tracker.html");
+</script>
+
+</body>
+</html>

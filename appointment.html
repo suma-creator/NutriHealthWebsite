@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Doctor Appointments — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="appt_title">🏥 Doctor Appointment System</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="appt_subtitle">
+          Choose a specialty, browse doctors in Bangladesh, and pick the one you want to book with.
+        </p>
+
+        <!-- Step 1: choose a specialty + location -->
+        <div class="card mb-24">
+          <h4 class="mb-16" data-i18n="appt_step1_heading">1. Choose a specialty &amp; location</h4>
+          <form id="apptFindForm" class="flex gap-16" style="flex-wrap:wrap;align-items:end;">
+            <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0;">
+              <label class="form-label" for="apptSpecialty" data-i18n="appt_specialty_label">Specialty</label>
+              <select class="form-select" id="apptSpecialty" required></select>
+            </div>
+            <div class="form-group" style="flex:1;min-width:220px;margin-bottom:0;">
+              <label class="form-label" for="apptLocation" data-i18n="appt_location_label">Location</label>
+              <select class="form-select" id="apptLocation" required></select>
+            </div>
+            <button type="submit" class="btn btn-primary" data-i18n="appt_find_btn">Find Doctors</button>
+          </form>
+        </div>
+
+        <!-- Step 2: pick a doctor from the generated list -->
+        <div id="apptDoctorResults" class="mb-24" style="display:none;">
+          <div class="flex-between mb-16" style="flex-wrap:wrap;gap:12px;">
+            <h4 style="margin:0;" data-i18n="appt_step2_heading">2. Pick a doctor</h4>
+            <div id="apptLocationFilterRow" class="location-chip-row"></div>
+          </div>
+          <p id="apptLocationNotice" class="text-sm text-muted mb-16" style="display:none;"></p>
+          <div id="apptDoctorList" class="flex-col gap-12"></div>
+          <p id="apptNoResults" class="text-sm text-muted" style="display:none;" data-i18n="appt_no_results">No doctors match this location filter — try "All locations".</p>
+        </div>
+
+        <!-- Step 3: confirm date/time and book the chosen doctor -->
+        <div id="apptBookingCard" class="card mb-24" style="display:none;">
+          <div class="flex-between mb-16" style="align-items:flex-start;">
+            <h4 data-i18n="appt_step3_heading">3. Confirm your appointment</h4>
+            <button type="button" id="apptChangeDoctorBtn" class="btn btn-ghost btn-sm" data-i18n="appt_change_doctor_btn">← Change doctor</button>
+          </div>
+
+          <div id="apptSelectedDoctor" class="mb-16" style="padding:12px 14px;border-radius:12px;background:var(--color-primary-light);"></div>
+
+          <form id="apptBookForm">
+            <div class="grid grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="apptDate" data-i18n="appt_date_label">Preferred date</label>
+                <input class="form-input" type="date" id="apptDate" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="apptTime" data-i18n="appt_time_label">Preferred time</label>
+                <input class="form-input" type="time" id="apptTime" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="apptReason" data-i18n="appt_reason_label">Reason for visit (optional)</label>
+              <textarea class="form-textarea" id="apptReason" rows="3" placeholder="e.g. Routine checkup, follow-up, persistent cough..."></textarea>
+            </div>
+            <button type="submit" id="apptBtn" class="btn btn-primary btn-block" data-i18n="appt_confirm_btn">Confirm Booking</button>
+          </form>
+        </div>
+
+        <div id="apptConfirmation" class="card mb-24" style="display:none;"></div>
+
+        <!-- Existing appointments -->
+        <div class="card">
+          <h4 class="mb-16" data-i18n="appt_your_appointments">Your appointments</h4>
+          <div id="apptList" class="flex-col gap-12">
+            <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/appointment.js"></script>
+</body>
+</html>

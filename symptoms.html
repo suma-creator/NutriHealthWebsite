@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Symptom Checker — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+<style>
+  .symptom-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .symptom-chip { display:flex; align-items:center; gap:8px; padding:12px 14px; border-radius:12px; border:1.5px solid var(--color-border); cursor:pointer; font-size:0.88rem; font-weight:600; transition:border-color .2s, background .2s; }
+  .symptom-chip:has(input:checked) { border-color:var(--color-primary); background:var(--color-primary-light); color:var(--color-primary); }
+  .symptom-chip.ai-detected { border-color:var(--color-mint,#2ecc9b); }
+  .input-mode-toggle { display:flex; gap:8px; margin-bottom:16px; }
+  .input-mode-toggle button { flex:1; }
+  .input-mode-toggle button[aria-selected="true"] { border-color:var(--color-primary); background:var(--color-primary-light); color:var(--color-primary); }
+  .vitals-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  .info-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+  @media (max-width:720px){
+    .symptom-grid{ grid-template-columns:repeat(2,1fr);}
+    .vitals-grid{ grid-template-columns:repeat(2,1fr);}
+    .info-grid{ grid-template-columns:1fr;}
+  }
+  @media print {
+    #sidebarContainer, #topbarContainer, #symptomForm, .no-print, #pageLoader { display:none !important; }
+    .app-shell, .main-content, .page-body { display:block !important; }
+    .card { border:1px solid #ccc !important; box-shadow:none !important; break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="symptoms_title">Symptom Checker</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="symptoms_subtitle">Select what you're feeling and, optionally, add vital signs for a more complete AI analysis. This gives general guidance only — not a diagnosis.</p>
+
+        <div class="card mb-24 no-print">
+          <form id="symptomForm">
+            <h4 class="mb-16" data-i18n="symptoms_symptoms_heading">Symptoms</h4>
+            <p class="text-sm text-muted mb-12" data-i18n="symptoms_choose_hint">Choose whichever is easier — pick from the list, or describe how you're feeling in your own words and let AI find the matching symptoms for you.</p>
+
+            <div class="input-mode-toggle no-print">
+              <button type="button" id="modeChecklistBtn" class="btn btn-outline btn-sm" aria-selected="true" data-mode="checklist" data-i18n="symptoms_mode_checklist">☑️ Choose from list</button>
+              <button type="button" id="modeFreetextBtn" class="btn btn-outline btn-sm" aria-selected="false" data-mode="freetext" data-i18n="symptoms_mode_freetext">✍️ Describe in my own words</button>
+            </div>
+
+            <div id="symptomFreetextSection" style="display:none;">
+              <textarea id="symptomFreeText" class="form-input" rows="4" data-i18n-placeholder="symptoms_freetext_placeholder" placeholder="e.g. I've had a fever and sore throat since yesterday, plus a headache that won't go away and I feel really tired."></textarea>
+              <div class="flex gap-12 mt-12" style="align-items:center;flex-wrap:wrap;">
+                <button type="button" id="analyzeFreeTextBtn" class="btn btn-primary btn-sm" data-i18n="symptoms_analyze_ai_btn">🤖 Analyze with AI</button>
+                <span class="text-sm text-muted" id="freeTextStatus"></span>
+              </div>
+            </div>
+
+            <div id="symptomChecklistSection">
+              <p class="text-sm text-muted mb-8" id="aiDetectedNote" style="display:none;"></p>
+              <div class="symptom-grid" id="symptomGrid"></div>
+            </div>
+
+            <h4 class="mt-24 mb-8"><span data-i18n="symptoms_more_context">More context</span> <span class="text-sm text-muted" style="font-weight:400;" data-i18n="symptoms_optional_sharpens">(optional, sharpens the analysis)</span></h4>
+            <div class="grid grid-2" style="grid-template-columns:1fr 1fr;gap:14px;">
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_duration_label">How long have you had these symptoms?</label>
+                <select id="symptomDuration" class="form-input">
+                  <option value="" data-i18n="symptoms_not_sure">Not sure / prefer not to say</option>
+                  <option value="today" data-i18n="symptoms_duration_today">Started today</option>
+                  <option value="1_3" data-i18n="symptoms_duration_1_3">1–3 days</option>
+                  <option value="4_7" data-i18n="symptoms_duration_4_7">4–7 days</option>
+                  <option value="week_plus" data-i18n="symptoms_duration_week_plus">More than a week</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_severity_label">How would you rate the overall severity?</label>
+                <select id="symptomOverallSeverity" class="form-input">
+                  <option value="" data-i18n="symptoms_not_sure">Not sure / prefer not to say</option>
+                  <option value="mild" data-i18n="symptoms_severity_mild">Mild — noticeable but manageable</option>
+                  <option value="moderate" data-i18n="symptoms_severity_moderate">Moderate — interferes with daily activity</option>
+                  <option value="severe" data-i18n="symptoms_severity_severe">Severe — hard to function normally</option>
+                </select>
+              </div>
+            </div>
+
+            <h4 class="mt-24 mb-8"><span data-i18n="symptoms_vital_signs">Vital signs</span> <span class="text-sm text-muted" style="font-weight:400;" data-i18n="symptoms_optional">(optional)</span></h4>
+            <p class="text-sm text-muted mb-16" id="bmiContextNote" data-i18n="symptoms_loading_bmi">Loading BMI context...</p>
+            <div class="vitals-grid">
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_temp">Temperature (°C)</label>
+                <input type="number" step="0.1" id="vitalTemp" class="form-input" placeholder="e.g. 37.0" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_hr">Heart rate (bpm)</label>
+                <input type="number" id="vitalHeartRate" class="form-input" placeholder="e.g. 78" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_bpsys">BP systolic (mmHg)</label>
+                <input type="number" id="vitalBpSys" class="form-input" placeholder="e.g. 120" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_bpdia">BP diastolic (mmHg)</label>
+                <input type="number" id="vitalBpDia" class="form-input" placeholder="e.g. 80" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_oxygen">Oxygen saturation (%)</label>
+                <input type="number" id="vitalOxygen" class="form-input" placeholder="e.g. 98" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_resp">Respiratory rate (br/min)</label>
+                <input type="number" id="vitalRespRate" class="form-input" placeholder="e.g. 16" />
+              </div>
+              <div>
+                <label class="form-label text-sm" data-i18n="symptoms_vital_sugar">Blood sugar (mg/dL)</label>
+                <input type="number" id="vitalBloodSugar" class="form-input" placeholder="e.g. 95" />
+              </div>
+            </div>
+
+            <button type="submit" id="symptomBtn" class="btn btn-primary mt-24" data-i18n="symptoms_check_btn">Check symptoms</button>
+          </form>
+        </div>
+
+        <div class="card" id="symptomResult" style="display:none;">
+
+          <div class="nutrition-report-header">
+            <div>
+              <span class="eyebrow" data-i18n="symptoms_report_eyebrow">Symptom check report</span>
+              <h3 class="mt-16" data-i18n="symptoms_report_title">AI Symptom Report</h3>
+              <p class="text-sm text-muted mt-12" data-i18n="symptoms_report_subtitle">AI-assisted analysis of your reported symptoms — educational only, not a diagnosis.</p>
+            </div>
+            <div class="report-meta">
+              <div class="text-sm text-muted"><span data-i18n="symptoms_prepared_by">Prepared by</span> <strong>NutriHealth Symptom Checker</strong></div>
+            </div>
+          </div>
+
+          <div class="nutrition-report-banner">
+            <div class="report-banner-item">
+              <div class="text-sm text-muted" data-i18n="symptoms_patient">Patient</div>
+              <strong id="reportPatientName">—</strong>
+            </div>
+            <div class="report-banner-item">
+              <div class="text-sm text-muted" data-i18n="symptoms_date">Date</div>
+              <strong id="reportPatientDate">—</strong>
+            </div>
+            <div class="report-banner-item">
+              <div class="text-sm text-muted" data-i18n="symptoms_risk_level">Risk level</div>
+              <strong id="reportPatientRisk">—</strong>
+            </div>
+          </div>
+
+          <div class="nutrition-report-card mb-24">
+            <div class="report-section-header">
+              <h4 data-i18n="symptoms_ai_analysis">AI Analysis</h4>
+              <p class="text-sm text-muted" data-i18n="symptoms_deterministic_note">Deterministic scoring based on your reported symptoms and vitals.</p>
+            </div>
+            <div class="report-summary-grid mt-20">
+              <div class="report-metric">
+                <div class="metric-label" data-i18n="symptoms_severity_score">Severity score</div>
+                <div class="metric-value" id="aiSeverityValue">—</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-label" data-i18n="symptoms_confidence">Confidence</div>
+                <div class="metric-value" id="aiConfidenceValue">—</div>
+              </div>
+              <div class="report-metric">
+                <div class="metric-label" data-i18n="symptoms_risk_level">Risk level</div>
+                <div class="metric-value" id="aiRiskValue">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card report-panel report-insight-card mb-16">
+            <div class="report-section-header"><h4 data-i18n="symptoms_ai_health_summary">🤖 AI Health Summary</h4></div>
+            <p class="text-sm mt-8" id="aiSummaryText"></p>
+          </div>
+
+          <div class="card report-panel mb-16" id="aiExplanationBox" style="display:none;">
+            <div class="report-section-header"><h4 data-i18n="symptoms_ai_explanation">🤖 AI-Generated Explanation</h4></div>
+            <p class="text-sm text-muted mt-8" id="aiExplanationLoading" data-i18n="symptoms_asking_ai">Asking the AI for a personalized explanation...</p>
+            <p class="text-sm mt-8" id="aiExplanationText" style="display:none;"></p>
+          </div>
+
+          <div class="mb-24" id="vitalsFlagsBox" style="display:none;">
+            <strong class="text-sm" data-i18n="symptoms_vitals_flagged">Vitals flagged</strong>
+            <div class="mt-8" id="vitalsFlagsList"></div>
+          </div>
+
+          <h4 class="mb-8" data-i18n="symptoms_disease_probability">Disease Probability</h4>
+          <div class="mb-24" id="aiProbabilityList"></div>
+
+          <h4 class="mb-16" data-i18n="symptoms_possible_conditions">Possible conditions</h4>
+          <div id="conditionsList" class="flex-col gap-12 mb-24"></div>
+
+          <div id="urgentNotice" style="display:none;" class="card" style="background:var(--tint-coral);border-color:var(--color-coral);margin-bottom:16px;">
+            <strong style="color:var(--color-coral);" data-i18n="symptoms_seek_promptly">⚠️ Seek medical attention promptly</strong>
+            <p class="text-sm mt-8" id="urgentNoticeText" data-i18n="symptoms_urgent_text">Chest pain or shortness of breath can be serious. Please contact a doctor or emergency services.</p>
+          </div>
+
+          <h4 class="mb-8" data-i18n="symptoms_recommendation">Recommendation</h4>
+          <p class="text-sm mb-24" id="recommendationText"></p>
+
+          <div class="card mb-24" id="diseaseInfoBox" style="display:none;padding:20px;">
+            <h4 class="mb-16"><span data-i18n="symptoms_disease_info">Disease Information</span> — <span id="diseaseInfoName"></span></h4>
+            <p class="text-sm mb-16" id="diseaseInfoDescription"></p>
+            <div class="info-grid text-sm">
+              <div><strong data-i18n="symptoms_cause">Cause:</strong> <span id="diseaseInfoCause"></span></div>
+              <div><strong data-i18n="symptoms_incubation">Incubation:</strong> <span id="diseaseInfoIncubation"></span></div>
+              <div><strong data-i18n="symptoms_recovery_time">Recovery time:</strong> <span id="diseaseInfoRecovery"></span></div>
+              <div><strong data-i18n="symptoms_contagious">Contagious:</strong> <span id="diseaseInfoContagious"></span></div>
+              <div><strong data-i18n="symptoms_body_system">Body system:</strong> <span id="diseaseInfoBodySystem"></span></div>
+            </div>
+          </div>
+
+          <div class="card mb-24" id="lifestyleAdviceBox" style="display:none;padding:20px;">
+            <h4 class="mb-16" data-i18n="symptoms_lifestyle_guidance">Lifestyle Guidance</h4>
+            <div class="info-grid text-sm">
+              <div>
+                <strong data-i18n="symptoms_recommended_foods">🍲 Recommended Foods</strong>
+                <ul id="lifestyleFoodsList" style="padding-left:20px;margin-top:6px;"></ul>
+              </div>
+              <div>
+                <strong data-i18n="symptoms_things_avoid">🚫 Things to Avoid</strong>
+                <ul id="lifestyleAvoidList" style="padding-left:20px;margin-top:6px;"></ul>
+              </div>
+              <div>
+                <strong data-i18n="symptoms_hydration_advice">💧 Hydration Advice</strong>
+                <p class="mt-6" id="lifestyleHydrationText"></p>
+              </div>
+              <div>
+                <strong data-i18n="symptoms_rest_advice">🛌 Rest Advice</strong>
+                <p class="mt-6" id="lifestyleRestText"></p>
+              </div>
+              <div style="grid-column:1 / -1;">
+                <strong data-i18n="symptoms_exercise">🏃 Exercise</strong>
+                <p class="mt-6" id="lifestyleExerciseText"></p>
+              </div>
+            </div>
+            <div class="card mt-16" style="background:var(--tint-coral);border-color:var(--color-coral);padding:14px;">
+              <strong style="color:var(--color-coral);" data-i18n="symptoms_seek_immediately_if">⚠️ Seek medical care immediately if:</strong>
+              <ul class="text-sm mt-8" id="lifestyleWarningsList" style="padding-left:20px;"></ul>
+            </div>
+          </div>
+
+          <div class="card mb-24" id="labTestsBox" style="display:none;padding:20px;">
+            <h4 class="mb-8" data-i18n="symptoms_lab_tests">Suggested Lab Tests</h4>
+            <p class="text-sm text-muted mb-16" data-i18n="symptoms_lab_tests_note">If your doctor thinks it's warranted — these are common tests for this pattern, not a requirement.</p>
+            <ul class="text-sm" id="labTestsList" style="padding-left:20px;"></ul>
+          </div>
+
+          <div class="card mb-24" id="doctorRecBox" style="display:none;padding:20px;">
+            <h4 class="mb-8" data-i18n="symptoms_doctor_rec">Doctor Recommendation</h4>
+            <div class="flex-between" style="align-items:center;flex-wrap:wrap;gap:14px;">
+              <div class="flex gap-12" style="align-items:center;">
+                <span class="stat-icon icon-blue" style="width:40px;height:40px;flex-shrink:0;margin:0;">🧑‍⚕️</span>
+                <div>
+                  <div style="font-weight:700;" id="doctorRecType"></div>
+                  <div class="text-sm text-muted mt-6" id="doctorRecReason"></div>
+                </div>
+              </div>
+              <a id="doctorRecBookLink" href="appointment.html" class="btn btn-primary btn-sm" data-i18n="symptoms_book_doctor">Book a doctor →</a>
+            </div>
+          </div>
+
+          <div class="card mb-24" style="padding:20px;">
+            <h4 class="mb-8" data-i18n="symptoms_prevention">Prevention</h4>
+            <p class="text-sm text-muted mb-16" data-i18n="symptoms_prevention_note">Check off what you'll do — it's logged to your prevention history.</p>
+            <div id="preventionList"></div>
+          </div>
+
+          <div id="medicineSuggestions" class="mt-24" style="display:none;">
+            <h4 class="mb-8" data-i18n="symptoms_medicine_help">Medicine that may help</h4>
+            <p class="text-sm text-muted mb-16" data-i18n="symptoms_medicine_disclaimer">General, educational information only — not a prescription. Check the label, follow the recommended dose, and ask a pharmacist or doctor before use, especially for children, pregnancy, or existing conditions.</p>
+            <div id="medicineSuggestionList" class="flex-col gap-12"></div>
+          </div>
+
+          <div class="report-footer">
+            <span class="text-sm text-muted" data-i18n="symptoms_footer_disclaimer">Educational AI analysis — not a medical diagnosis.</span>
+            <div class="text-sm text-muted" data-i18n="symptoms_footer_prepared">Prepared by NutriHealth Symptom Checker</div>
+          </div>
+
+          <div class="card mt-24 no-print" style="padding:20px;">
+            <h4 class="mb-8" data-i18n="symptoms_report_word">Report</h4>
+            <p class="text-sm text-muted mb-16" data-i18n="symptoms_download_note">Download, print, email, share, or generate a QR code for this report.</p>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <button type="button" id="reportDownloadBtn" class="btn btn-primary btn-sm" data-i18n="symptoms_download_pdf">Download PDF</button>
+              <button type="button" id="reportPrintBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_print">Print</button>
+              <button type="button" id="reportEmailBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_email">Email</button>
+              <button type="button" id="reportShareBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_share">Share</button>
+              <button type="button" id="reportQrBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_qr_code">QR Code</button>
+              <button type="button" id="reportDoctorBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_doctor_summary">Doctor Summary</button>
+            </div>
+            <div id="reportQrBox" style="display:none;margin-top:16px;text-align:center;">
+              <img id="reportQrImage" alt="QR code for report summary" width="180" height="180" style="display:none;" />
+              <p class="text-sm text-muted mt-8" id="reportQrStatus" style="display:none;"></p>
+              <a id="reportQrOpenLink" href="#" target="_blank" rel="noopener" class="text-sm" style="display:none;" data-i18n="symptoms_open_qr">Open QR code image directly →</a>
+              <p class="text-sm text-muted mt-8" data-i18n="symptoms_scan_qr_note">Scan to view this report's summary on another device.</p>
+            </div>
+          </div>
+        </div>
+
+       <h4 class="mt-32 mb-16" data-i18n="symptoms_past_checks">Past checks</h4>
+
+<div class="card">
+    <div id="symptomHistoryList" class="flex-col gap-12">
+        <p class="text-sm text-muted" data-i18n="symptoms_loading">Loading...</p>
+    </div>
+</div>
+
+<!-- ================= AI Symptom Chat ================= -->
+
+<div class="card mt-24" style="padding:24px;max-width:850px;margin:24px auto;">
+
+    <div class="flex-between" style="align-items:center;">
+        <h3 data-i18n="symptoms_chat_title">🤖 AI Symptom Chat</h3>
+        <button type="button" id="symptomChatVoiceToggle" class="voice-toggle-btn" aria-label="Toggle voice replies" data-i18n-label="symptoms_toggle_voice">🔇</button>
+    </div>
+
+    <p class="text-sm text-muted mb-16" data-i18n="symptoms_chat_subtitle">
+        Describe your symptoms naturally and receive AI guidance.
+    </p>
+
+    <div
+        class="text-sm text-muted"
+        style="
+            background:var(--tint-amber);
+            padding:12px;
+            border-radius:10px;
+            margin-bottom:20px;
+        "
+        data-i18n="symptoms_chat_disclaimer"
+    >
+        ⚠️ This AI gives educational information only.
+        It is NOT a medical diagnosis.
+        If you have severe chest pain, breathing difficulty,
+        stroke symptoms, or another emergency,
+        seek immediate medical care.
+    </div>
+
+    <div
+        id="symptomChatLog"
+        style="
+            height:450px;
+            overflow-y:auto;
+            border:1px solid var(--color-border);
+            border-radius:12px;
+            padding:15px;
+            margin-bottom:15px;
+            background:var(--color-surface);
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+        "
+    ></div>
+
+    <div id="symptomChatVoiceStopBar" class="voice-stop-bar" style="display:none;">
+        <button type="button" id="symptomChatStopTalkingBtn" class="btn btn-outline btn-sm" data-i18n="symptoms_stop_talking">⏹️ Stop talking</button>
+    </div>
+
+    <form
+        id="symptomChatForm"
+        style="
+            display:flex;
+            gap:10px;
+        "
+    >
+        <button
+            type="button"
+            id="symptomChatVoiceInputBtn"
+            class="btn btn-outline voice-btn"
+            aria-label="Start voice input"
+            data-i18n-label="symptoms_start_voice"
+        >🎤</button>
+
+        <input
+            id="symptomChatInput"
+            class="form-input"
+            type="text"
+            placeholder="Example: I have fever and sore throat for 2 days..."
+            data-i18n-placeholder="symptoms_chat_placeholder"
+            autocomplete="off"
+            required
+            style="flex:1;"
+        />
+
+        <button
+            class="btn btn-primary"
+            type="submit"
+            data-i18n="symptoms_send"
+        >
+            Send
+        </button>
+
+    </form>
+
+</div>
+
+<!-- ================= End AI Chat ================= -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/symptoms.js"></script>
+</body>
+</html>

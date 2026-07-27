@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diet Plan Generator — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+<div id="pageLoader" class="page-loader">
+    <div class="loader-pulse"></div>
+</div>
+
+<div class="app-shell">
+
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+
+        <div id="topbarContainer"></div>
+
+        <div class="page-body">
+
+            <h2 data-i18n="dietplan_title">🥗 Personalized Diet Plan</h2>
+
+            <p class="text-sm mt-8 mb-24" data-i18n="dietplan_subtitle">Choose your health goal to generate a personalized meal plan including breakfast, lunch, dinner and healthy snacks.</p>
+
+            <div class="card mb-24">
+
+                <form id="dietForm" class="flex gap-16" style="flex-wrap:wrap;align-items:end;">
+
+                    <div class="form-group" style="flex:1;min-width:260px;margin-bottom:0;">
+                        <label class="form-label" for="dGoal" data-i18n="dietplan_goal_label">Select Diet Goal</label>
+
+                        <select class="form-select" id="dGoal">
+
+                            <optgroup label="🏋️ Weight Goals" data-i18n-label="dietplan_grp_weight">
+                                <option value="loss" data-i18n="dietplan_opt_loss">⚖️ Weight Loss</option>
+                                <option value="maintenance" data-i18n="dietplan_opt_maintenance">🎯 Weight Maintenance</option>
+                                <option value="gain" data-i18n="dietplan_opt_gain">📈 Weight Gain</option>
+                                <option value="muscleGain" data-i18n="dietplan_opt_musclegain">💪 Muscle Gain</option>
+                                <option value="fatLoss" data-i18n="dietplan_opt_fatloss">🔥 Fat Loss</option>
+                            </optgroup>
+
+                            <optgroup label="🥗 Diet Types" data-i18n-label="dietplan_grp_diettypes">
+                                <option value="highProtein" data-i18n="dietplan_opt_highprotein">🥩 High Protein</option>
+                                <option value="vegetarian" data-i18n="dietplan_opt_vegetarian">🥦 Vegetarian</option>
+                                <option value="vegan" data-i18n="dietplan_opt_vegan">🌱 Vegan</option>
+                                <option value="lowCarb" data-i18n="dietplan_opt_lowcarb">🥬 Low Carb</option>
+                                <option value="keto" data-i18n="dietplan_opt_keto">🥓 Ketogenic (Keto)</option>
+                                <option value="mediterranean" data-i18n="dietplan_opt_mediterranean">🫒 Mediterranean</option>
+                                <option value="glutenFree" data-i18n="dietplan_opt_glutenfree">🌾 Gluten Free</option>
+                            </optgroup>
+
+                            <optgroup label="❤️ Health Conditions" data-i18n-label="dietplan_grp_health">
+                                <option value="diabetic" data-i18n="dietplan_opt_diabetic">🩺 Diabetic Friendly</option>
+                                <option value="heartHealthy" data-i18n="dietplan_opt_hearthealthy">❤️ Heart Healthy</option>
+                                <option value="lowSodium" data-i18n="dietplan_opt_lowsodium">🧂 Low Sodium</option>
+                            </optgroup>
+
+                            <optgroup label="🏃 Lifestyle" data-i18n-label="dietplan_grp_lifestyle">
+                                <option value="athlete" data-i18n="dietplan_opt_athlete">🏋️ Athlete</option>
+                                <option value="budget" data-i18n="dietplan_opt_budget">💰 Budget Friendly</option>
+                                <option value="quickMeals" data-i18n="dietplan_opt_quickmeals">⚡ Quick Meals</option>
+                            </optgroup>
+
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="min-width:200px;margin-bottom:0;">
+                        <label class="form-label" for="dCuisine" data-i18n="dietplan_cuisine_label">Cuisine</label>
+                        <select class="form-select" id="dCuisine">
+                            <option value="" data-i18n="dietplan_cuisine_any">🌍 Any / Global</option>
+                            <option value="bangladeshi" data-i18n="dietplan_cuisine_bd">🇧🇩 Bangladeshi</option>
+                            <option value="indian" data-i18n="dietplan_cuisine_in">🇮🇳 Indian</option>
+                            <option value="pakistani" data-i18n="dietplan_cuisine_pk">🇵🇰 Pakistani</option>
+                            <option value="korean" data-i18n="dietplan_cuisine_kr">🇰🇷 Korean</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="min-width:160px;margin-bottom:0;">
+                        <label class="form-label" for="dCalories" data-i18n="dietplan_calories_label">Target Calories / Day</label>
+                        <input class="form-input" type="number" id="dCalories" min="1000" max="5000" step="50" value="2000" />
+                    </div>
+
+                    <button type="submit" id="dietBtn" class="btn btn-primary" data-i18n="dietplan_generate_btn">🍽️ Generate Diet Plan</button>
+
+                </form>
+
+                <p class="text-sm text-muted mt-12" style="margin-bottom:0;" data-i18n="dietplan_ai_note">🤖 Bangladeshi, Indian, Pakistani, and Korean plans are generated by AI for authentic dishes — Spoonacular's database doesn't cover regional cuisine well.</p>
+
+            </div>
+
+            <div class="grid grid-2" id="dietResult" style="display:none;">
+
+                <div class="card">
+                    <span class="stat-icon icon-amber">🌅</span>
+                    <h4 class="mt-16" data-i18n="dietplan_breakfast">Breakfast</h4>
+                    <div class="text-sm mt-8" id="mealBreakfast"></div>
+                </div>
+
+                <div class="card">
+                    <span class="stat-icon icon-teal">🥗</span>
+                    <h4 class="mt-16" data-i18n="dietplan_lunch">Lunch</h4>
+                    <div class="text-sm mt-8" id="mealLunch"></div>
+                </div>
+
+                <div class="card">
+                    <span class="stat-icon icon-blue">🍽️</span>
+                    <h4 class="mt-16" data-i18n="dietplan_dinner">Dinner</h4>
+                    <div class="text-sm mt-8" id="mealDinner"></div>
+                </div>
+
+                <div class="card">
+                    <span class="stat-icon icon-mint">🍎</span>
+                    <h4 class="mt-16" data-i18n="dietplan_snacks">Healthy Snacks</h4>
+                    <div class="text-sm mt-8" id="mealSnacks"></div>
+                </div>
+
+            </div>
+
+            <p class="text-sm text-muted mt-16" id="dietNutrientSummary" style="display:none;"></p>
+
+            <div id="dietGroceryCta" class="card mt-16" style="display:none;">
+                <div class="flex-between" style="flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <h4 data-i18n="dietplan_shop_heading">🛒 Ready to shop?</h4>
+                        <p class="text-sm text-muted mt-6" data-i18n="dietplan_shop_subtitle">Turn this plan into a categorized grocery list automatically.</p>
+                    </div>
+                    <a href="grocery.html" class="btn btn-primary" data-i18n="dietplan_shop_btn">Plan My Groceries</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/shell.js"></script>
+<script src="js/diet-plan.js"></script>
+
+</body>
+</html>

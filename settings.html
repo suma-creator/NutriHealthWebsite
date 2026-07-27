@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="settings_title">Settings</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="settings_subtitle">Manage your appearance, notifications, privacy, and account.</p>
+
+        <div class="grid" style="grid-template-columns:1fr;gap:20px;max-width:720px;">
+
+          <!-- Appearance -->
+          <div class="card">
+            <h4 data-i18n="settings_appearance">🎨 Appearance</h4>
+            <div class="flex-between mt-16">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_dark_mode">Dark mode</div>
+                <div class="text-sm text-muted" data-i18n="settings_dark_mode_desc">Switch between light and dark themes.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="darkModeToggle" />
+                <span class="switch-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="card">
+            <h4 data-i18n="settings_notifications">🔔 Notifications</h4>
+            <div class="flex-between mt-16">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_browser_notif">Browser notifications</div>
+                <div class="text-sm text-muted" id="notifPermissionNote" data-i18n="settings_browser_notif_desc">Allow NutriHealth to send reminders to this browser.</div>
+              </div>
+              <button type="button" id="notifPermissionBtn" class="btn btn-outline btn-sm" data-i18n="settings_enable">Enable</button>
+            </div>
+            <div class="flex-between mt-24">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_medicine_reminders">Medicine reminders</div>
+                <div class="text-sm text-muted" data-i18n="settings_medicine_reminders_desc">Get notified when it's time for a dose.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="notifMedicineToggle" />
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <div class="flex-between mt-16">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_daily_nudges">Daily health nudges</div>
+                <div class="text-sm text-muted" data-i18n="settings_daily_nudges_desc">Water, sleep, and workout reminders.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="notifDailyToggle" />
+                <span class="switch-track"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- WhatsApp Reminders -->
+          <div class="card">
+            <h4 data-i18n="settings_whatsapp_title">📱 WhatsApp Reminders</h4>
+            <p class="text-sm text-muted mt-8" data-i18n="settings_whatsapp_desc">
+              Get your Reminder Center notifications delivered to WhatsApp. If a WhatsApp message
+              can't be sent, we automatically fall back to a browser/in-app notification instead.
+            </p>
+
+            <div class="mt-16" id="whatsappStatusBlock">
+              <div class="text-sm text-muted" id="whatsappStatusText" data-i18n="settings_whatsapp_status_loading">Loading…</div>
+            </div>
+
+            <!-- Step 1: enter number -->
+            <div class="form-group mt-16" id="whatsappNumberGroup">
+              <label class="form-label" for="whatsappNumberInput" data-i18n="settings_whatsapp_number_label">WhatsApp number</label>
+              <input class="form-input" type="tel" id="whatsappNumberInput" placeholder="+8801XXXXXXXXX" data-i18n-placeholder="settings_whatsapp_number_placeholder" />
+              <div class="form-hint" data-i18n="settings_whatsapp_number_hint">Include your country code, e.g. +8801XXXXXXXXX.</div>
+              <button type="button" class="btn btn-primary btn-sm mt-8" id="whatsappSendCodeBtn" data-i18n="settings_whatsapp_send_code">Send verification code</button>
+            </div>
+
+            <!-- Step 2: enter code -->
+            <div class="form-group mt-16" id="whatsappCodeGroup" style="display:none;">
+              <label class="form-label" for="whatsappCodeInput" data-i18n="settings_whatsapp_code_label">Verification code</label>
+              <input class="form-input" type="text" id="whatsappCodeInput" inputmode="numeric" maxlength="6" placeholder="123456" />
+              <div class="flex gap-16 mt-8">
+                <button type="button" class="btn btn-primary btn-sm" id="whatsappVerifyBtn" data-i18n="settings_whatsapp_verify">Verify</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="whatsappCancelCodeBtn" data-i18n="reminder_cancel">Cancel</button>
+              </div>
+            </div>
+
+            <!-- Step 3: verified, on/off toggle -->
+            <div class="flex-between mt-16" id="whatsappToggleGroup" style="display:none;">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_whatsapp_enable_label">WhatsApp reminders</div>
+                <div class="text-sm text-muted" id="whatsappVerifiedNumber"></div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="whatsappEnabledToggle" />
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm mt-16" id="whatsappChangeNumberBtn" style="display:none;" data-i18n="settings_whatsapp_change_number">Use a different number</button>
+          </div>
+
+          <!-- Privacy -->
+          <div class="card">
+            <h4 data-i18n="settings_privacy">🔒 Privacy</h4>
+            <div class="flex-between mt-16">
+              <div>
+                <div style="font-weight:600;" data-i18n="settings_help_improve">Help improve NutriHealth</div>
+                <div class="text-sm text-muted" data-i18n="settings_help_improve_desc">Share anonymized usage patterns to improve recommendations.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="privacyAnonToggle" />
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <div class="mt-24" style="border-top:1px solid var(--color-border);padding-top:20px;">
+              <div style="font-weight:600;" data-i18n="settings_export_data">Export your data</div>
+              <div class="text-sm text-muted mt-4 mb-12" data-i18n="settings_export_data_desc">Download everything NutriHealth has stored about you as a JSON file.</div>
+              <button type="button" id="exportDataBtn" class="btn btn-outline btn-sm" data-i18n="settings_download_data">Download my data</button>
+            </div>
+          </div>
+
+          <!-- Language -->
+          <div class="card">
+            <h4 data-i18n="settings_language_title">🌐 Language</h4>
+            <div class="form-group mt-16" style="margin-bottom:0;">
+              <label class="form-label" for="languageSelect" data-i18n="settings_language_label">Preferred language</label>
+              <select class="form-select" id="languageSelect">
+                <option value="en">English</option>
+                <option value="bn">বাংলা (Bangla)</option>
+                <option value="es" data-i18n="settings_lang_es">Español (coming soon)</option>
+                <option value="fr" data-i18n="settings_lang_fr">Français (coming soon)</option>
+                <option value="hi" data-i18n="settings_lang_hi">हिन्दी (coming soon)</option>
+                <option value="ar" data-i18n="settings_lang_ar">العربية (coming soon)</option>
+              </select>
+              <div class="form-hint" data-i18n="settings_lang_hint">NutriHealth is currently English-only. We'll save your preference and switch automatically once translations ship.</div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="card">
+            <h4 data-i18n="settings_account">👤 Account</h4>
+
+            <form id="passwordForm" class="mt-16">
+              <div class="form-group">
+                <label class="form-label" for="newPassword" data-i18n="settings_change_password">Change password</label>
+                <input class="form-input" type="password" id="newPassword" minlength="6" data-i18n-placeholder="settings_new_password_placeholder" placeholder="New password (min. 6 characters)" />
+              </div>
+              <button type="submit" id="passwordBtn" class="btn btn-outline btn-sm" data-i18n="settings_update_password">Update password</button>
+            </form>
+
+            <div class="mt-32" style="border-top:1px solid var(--color-border);padding-top:20px;">
+              <div style="font-weight:600;color:var(--color-coral);" data-i18n="settings_delete_account">Delete account</div>
+              <div class="text-sm text-muted mt-4 mb-12" data-i18n="settings_delete_account_desc">This permanently deletes your account and every piece of data associated with it — BMI history, food logs, symptom checks, reports, everything. This cannot be undone.</div>
+              <button type="button" id="deleteAccountBtn" class="btn btn-danger btn-sm" data-i18n="settings_delete_my_account">Delete my account</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

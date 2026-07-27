@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Food Gallery — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+<style>
+  .gallery-photo-input {
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .gallery-photo-input:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+  .gallery-photo-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ---- Folder view ---- */
+  .folder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+  .folder-card {
+    position: relative;
+    height: 180px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .folder-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .folder-card-cover {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.4);
+  }
+  .folder-card-emoji { font-size: 2.4rem; position: relative; z-index: 1; }
+  .folder-card-label {
+    font-weight: 700;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  .folder-card-count {
+    font-size: 0.82rem;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+  }
+  .folder-card.has-cover .folder-card-label,
+  .folder-card.has-cover .folder-card-count { color: #fff; }
+  .folder-card:not(.has-cover) .folder-card-count { color: var(--color-ink-soft); }
+
+  /* ---- Photo grid (inside a folder) ---- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 14px;
+  }
+  .gallery-tile {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .gallery-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition);
+  }
+  .gallery-tile:hover img { transform: scale(1.06); }
+  .gallery-tile-delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(6, 12, 15, 0.55);
+    color: #fff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .gallery-tile-delete:hover { background: rgba(220, 60, 60, 0.85); }
+  .gallery-tile-caption {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 18px 10px 8px;
+    font-size: 0.78rem;
+    color: #fff;
+    background: linear-gradient(to top, rgba(6,12,15,0.85), transparent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ---- Lightbox with prev/next navigation ---- */
+  .gallery-lightbox-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 12, 15, 0.85);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .gallery-lightbox-overlay.open { display: flex; }
+  .gallery-lightbox {
+    max-width: 620px;
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .gallery-lightbox-photo-wrap {
+    position: relative;
+    background: #000;
+  }
+  .gallery-lightbox img {
+    width: 100%;
+    max-height: 58vh;
+    object-fit: contain;
+    background: #000;
+    display: block;
+  }
+  .gallery-lightbox-body { padding: 18px 24px 22px; }
+  .gallery-lightbox-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(6, 12, 15, 0.55);
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    z-index: 2;
+  }
+  .gallery-lightbox-close:hover { background: rgba(6, 12, 15, 0.8); }
+  .gallery-lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(6, 12, 15, 0.5);
+    color: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .gallery-lightbox-nav:hover { background: rgba(6, 12, 15, 0.8); }
+  .gallery-lightbox-nav.prev { left: 10px; }
+  .gallery-lightbox-nav.next { right: 10px; }
+  .gallery-lightbox-position {
+    font-size: 0.78rem;
+    color: var(--color-ink-soft);
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="gallery_title">🖼️ Food Gallery</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="gallery_subtitle">A photo album of what you eat — organized into Breakfast, Lunch, Dinner, and Snack folders.</p>
+
+        <!-- Upload -->
+        <div class="card mb-24">
+          <h4 class="mb-16" data-i18n="gallery_add_heading">Add a photo</h4>
+          <form id="galleryForm">
+            <label class="gallery-photo-input" for="galleryPhotoInput">
+              <span id="galleryPhotoLabel" data-i18n="gallery_tap_choose">📷 Tap to choose a photo</span>
+              <img id="galleryPhotoPreview" class="gallery-photo-preview" alt="Selected photo preview" />
+            </label>
+            <input type="file" id="galleryPhotoInput" accept="image/*" style="display:none;" required />
+
+            <div class="form-group mt-16">
+              <label class="form-label" for="galleryMealType" data-i18n="gallery_folder_label">Folder</label>
+              <select class="form-select" id="galleryMealType" required>
+                <option value="breakfast" data-i18n="gallery_opt_breakfast">🌅 Breakfast</option>
+                <option value="lunch" data-i18n="gallery_opt_lunch">☀️ Lunch</option>
+                <option value="dinner" data-i18n="gallery_opt_dinner">🌙 Dinner</option>
+                <option value="snack" data-i18n="gallery_opt_snack">🍿 Snack</option>
+              </select>
+            </div>
+
+            <div class="form-group mt-16" style="margin-bottom:0;">
+              <label class="form-label" for="galleryCaption" data-i18n="gallery_caption_label">Caption (optional)</label>
+              <input class="form-input" type="text" id="galleryCaption" data-i18n-placeholder="gallery_caption_placeholder" placeholder="e.g. Homemade paratha & egg" />
+            </div>
+
+            <button type="submit" id="gallerySaveBtn" class="btn btn-primary btn-block mt-16" data-i18n="gallery_add_btn">Add to Gallery</button>
+          </form>
+        </div>
+
+        <!-- Folder view -->
+        <div id="galleryFolderView">
+          <h4 class="mb-16" data-i18n="gallery_folders_heading">Folders</h4>
+          <div id="galleryFolderGrid" class="folder-grid"></div>
+        </div>
+
+        <!-- Photo view (inside a folder) -->
+        <div id="galleryPhotoView" style="display:none;">
+          <div class="flex-between mb-16" style="flex-wrap:wrap;gap:12px;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="showFolderView()" data-i18n="gallery_all_folders">← All Folders</button>
+            <h4 id="galleryFolderTitle" style="margin:0;"></h4>
+          </div>
+          <div id="galleryGrid" class="gallery-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="galleryLightboxOverlay" class="gallery-lightbox-overlay" onclick="closeLightboxOnOverlay(event)">
+    <div class="gallery-lightbox">
+      <button type="button" class="gallery-lightbox-close" onclick="closeLightbox()" aria-label="Close" data-i18n-label="gallery_close_label">✕</button>
+      <div class="gallery-lightbox-photo-wrap">
+        <button type="button" class="gallery-lightbox-nav prev" onclick="navigateLightbox(-1)" aria-label="Previous photo" data-i18n-label="gallery_prev_label">◀</button>
+        <button type="button" class="gallery-lightbox-nav next" onclick="navigateLightbox(1)" aria-label="Next photo" data-i18n-label="gallery_next_label">▶</button>
+        <img id="galleryLightboxImg" src="" alt="Food photo" />
+      </div>
+      <div id="galleryLightboxContent" class="gallery-lightbox-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/gallery.js"></script>
+</body>
+</html>

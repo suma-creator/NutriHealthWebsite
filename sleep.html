@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sleep & Stress Tracker — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nav_sleep">Sleep &amp; Stress Tracker</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="sleep_subtitle">Log last night's sleep and today's stress level to get a quality analysis.</p>
+
+        <h4 class="mb-16" data-i18n="sleep_dashboard_heading">🌙 Sleep dashboard</h4>
+        <div class="card mb-24" id="sleepDashboard">
+          <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+        </div>
+
+        <div id="sleepGrid" class="grid grid-single" style="align-items:start;">
+          <div class="card">
+            <form id="sleepForm">
+              <div class="grid grid-2" style="gap:10px;">
+                <div class="form-group">
+                  <label class="form-label" for="sleepTimeInput" data-i18n="sleep_time_label">🌙 Sleep time</label>
+                  <input class="form-input" type="time" id="sleepTimeInput" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="wakeTimeInput" data-i18n="sleep_wake_time_input_label">☀️ Wake-up time</label>
+                  <input class="form-input" type="time" id="wakeTimeInput" required />
+                </div>
+              </div>
+              <p class="text-sm text-muted" id="sleepDurationPreview" data-i18n="sleep_duration_preview_placeholder">Duration will be calculated automatically.</p>
+              <div class="form-group">
+                <div class="flex-between">
+                  <label class="form-label" for="stressLevel" data-i18n="sleep_stress_label">Stress level</label>
+                  <span class="mono text-sm" id="stressValue">5</span>
+                </div>
+                <input type="range" id="stressLevel" min="1" max="10" value="5" style="width:100%;" oninput="qs('#stressValue').textContent=this.value" />
+                <div class="flex-between text-sm text-muted mt-8"><span data-i18n="sleep_calm">Calm</span><span data-i18n="sleep_overwhelmed">Overwhelmed</span></div>
+              </div>
+              <button type="submit" id="sleepBtn" class="btn btn-primary btn-block" data-i18n="sleep_save_btn">Save entry</button>
+            </form>
+          </div>
+
+          <div class="card" id="sleepResult" style="display:none;">
+            <div class="text-center">
+              <span class="stat-icon icon-teal" id="sleepIcon" style="margin:0 auto;">😴</span>
+              <h3 class="mt-16" id="sleepQuality">—</h3>
+            </div>
+            <p class="text-sm mt-16" id="sleepTip"></p>
+          </div>
+        </div>
+
+        <h4 class="mt-32 mb-16" data-i18n="sleep_recent_heading">Recent entries</h4>
+        <div class="card">
+          <div id="sleepHistory" class="flex-col gap-12">
+            <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+          </div>
+        </div>
+
+        <div class="grid grid-2 mt-32" style="gap:20px;align-items:start;">
+          <div>
+            <h4 class="mb-16" data-i18n="sleep_weekly_report_heading">📅 Weekly sleep report</h4>
+            <div class="card" id="sleepWeeklyReport">
+              <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+            </div>
+          </div>
+          <div>
+            <h4 class="mb-16" data-i18n="sleep_monthly_stats_heading">📊 Monthly sleep statistics</h4>
+            <div class="card" id="sleepMonthlyStats">
+              <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/sleep.js"></script>
+</body>
+</html>

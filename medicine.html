@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Medicine Reminders — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nav_medicine">Medicine Reminders</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="med_subtitle">Add your medicines and never miss a dose.</p>
+
+        <div class="grid grid-2" style="grid-template-columns:1fr 1.2fr;align-items:start;">
+          <div class="card">
+            <h4 class="mb-16" data-i18n="med_add_heading">Add a reminder</h4>
+            <form id="medForm">
+              <div class="form-group">
+                <label class="form-label" for="medName" data-i18n="med_name_label">Medicine name</label>
+                <input class="form-input" type="text" id="medName" list="commonMeds" required placeholder="e.g. Vitamin D" />
+                <datalist id="commonMeds">
+                  <option value="Vitamin D"></option>
+                  <option value="Ibuprofen"></option>
+                  <option value="Paracetamol"></option>
+                  <option value="Aspirin"></option>
+                  <option value="Metformin"></option>
+                  <option value="Amoxicillin"></option>
+                  <option value="Vitamin C"></option>
+                </datalist>
+                <p class="text-sm text-muted mt-6" data-i18n="med_name_hint">Choose a common medicine or type your own.</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="medDosage" data-i18n="med_dosage_label">Dosage</label>
+                <input class="form-input" type="text" id="medDosage" placeholder="e.g. 1 tablet, 500mg" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="medFrequency" data-i18n="med_frequency_label">Frequency</label>
+                <select class="form-select" id="medFrequency">
+                  <option data-i18n="freq_once_daily">Once daily</option>
+                  <option data-i18n="freq_twice_daily">Twice daily</option>
+                  <option data-i18n="freq_three_daily">Three times daily</option>
+                  <option data-i18n="freq_weekly">Weekly</option>
+                  <option data-i18n="freq_as_needed">As needed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="medTime" data-i18n="med_time_label">Reminder time</label>
+                <input class="form-input" type="time" id="medTime" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="medNotes" data-i18n="med_notes_label">Notes (optional)</label>
+                <input class="form-input" type="text" id="medNotes" data-i18n-placeholder="med_notes_placeholder" placeholder="e.g. Take with food" />
+              </div>
+              <button type="submit" id="medBtn" class="btn btn-primary btn-block" data-i18n="med_add_btn">Add reminder</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h4 class="mb-16" data-i18n="med_list_heading">Your reminders</h4>
+            <div id="medList" class="flex-col gap-12">
+              <p class="text-sm text-muted" data-i18n="common_loading">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/medicine.js"></script>
+</body>
+</html>

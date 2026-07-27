@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Food Journal — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+<style>
+  .journal-photo-input {
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .journal-photo-input:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+  .journal-photo-preview {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-top: 12px;
+    display: none;
+  }
+  .mood-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mood-chip {
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: transform var(--transition), border-color var(--transition), background var(--transition);
+  }
+  .mood-chip:hover { border-color: var(--color-primary); transform: translateY(-1px); }
+  .mood-chip.mood-chip-active {
+    background: var(--gradient-mint);
+    border-color: var(--color-primary);
+    color: #06231c;
+    font-weight: 700;
+  }
+  .journal-entry-photo {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+  }
+  .journal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .journal-card {
+    cursor: pointer;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+  .journal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ---- Read view modal ---- */
+  .journal-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 12, 15, 0.72);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .journal-modal-overlay.open { display: flex; }
+  .journal-modal {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    max-width: 560px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .journal-modal-photo {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: block;
+  }
+  .journal-modal-body { padding: 28px; }
+  .journal-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(6, 12, 15, 0.55);
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .journal-modal-close:hover { background: rgba(6, 12, 15, 0.8); }
+  .journal-modal-mood {
+    display: inline-block;
+    font-size: 0.95rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    padding: 4px 14px;
+    border-radius: var(--radius-pill);
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  .journal-modal-notes {
+    white-space: pre-wrap;
+    line-height: 1.7;
+    margin-top: 18px;
+  }
+</style>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="journal_title">📔 Food Journal</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="journal_subtitle">Save a photo of what you ate and write down how it made you feel — a personal memory log of your food journey.</p>
+
+        <!-- Add a memory -->
+        <div class="card mb-24">
+          <h4 class="mb-16" data-i18n="journal_add_memory">Add a memory</h4>
+          <form id="journalForm">
+            <label class="journal-photo-input" for="journalPhotoInput">
+              <span id="journalPhotoLabel" data-i18n="journal_tap_photo">📷 Tap to add a photo of your food (optional)</span>
+              <img id="journalPhotoPreview" class="journal-photo-preview" alt="Selected food photo preview" />
+            </label>
+            <input type="file" id="journalPhotoInput" accept="image/*" style="display:none;" />
+
+            <div class="grid grid-2 mt-16" style="gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="journalDate" data-i18n="journal_date_label">Date</label>
+                <input class="form-input" type="date" id="journalDate" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="journalMealType" data-i18n="journal_meal_label">Meal</label>
+                <select class="form-select" id="journalMealType">
+                  <option value="" data-i18n="journal_not_specified">Not specified</option>
+                  <option value="breakfast" data-i18n="journal_opt_breakfast">Breakfast</option>
+                  <option value="lunch" data-i18n="journal_opt_lunch">Lunch</option>
+                  <option value="dinner" data-i18n="journal_opt_dinner">Dinner</option>
+                  <option value="snack" data-i18n="journal_opt_snack">Snack</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group mt-16">
+              <label class="form-label" for="journalTitle" data-i18n="journal_title_label">Title (optional)</label>
+              <input class="form-input" type="text" id="journalTitle" data-i18n-placeholder="journal_title_placeholder" placeholder="e.g. Sunday brunch with family" />
+            </div>
+
+            <div class="form-group mt-16">
+              <label class="form-label" data-i18n="journal_mood_label">How did it make you feel?</label>
+              <div class="mood-chip-row" id="journalMoodRow"></div>
+            </div>
+
+            <div class="form-group mt-16" style="margin-bottom:0;">
+              <label class="form-label" for="journalNotes" data-i18n="journal_notes_label">Your thoughts</label>
+              <textarea class="form-textarea" id="journalNotes" rows="3" data-i18n-placeholder="journal_notes_placeholder" placeholder="Write about the moment, the taste, who you were with, anything on your mind..."></textarea>
+            </div>
+
+            <button type="submit" id="journalSaveBtn" class="btn btn-primary btn-block mt-16" data-i18n="journal_save_btn">Save Memory</button>
+          </form>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="grid grid-3 mb-24" id="journalStatsRow" style="display:none;">
+          <div class="card text-center">
+            <span class="stat-icon icon-blue">📔</span>
+            <div class="stat-value" id="journalStatTotal">0</div>
+            <div class="stat-label" data-i18n="journal_stat_memories">Memories saved</div>
+          </div>
+          <div class="card text-center">
+            <span class="stat-icon icon-mint">🗓️</span>
+            <div class="stat-value" id="journalStatWeek">0</div>
+            <div class="stat-label" data-i18n="journal_stat_week">This week</div>
+          </div>
+          <div class="card text-center">
+            <span class="stat-icon icon-amber">💭</span>
+            <div class="stat-value" id="journalStatMood">—</div>
+            <div class="stat-label" data-i18n="journal_stat_mood">Most common mood</div>
+          </div>
+        </div>
+
+        <!-- Memory feed -->
+        <h4 class="mb-16" data-i18n="journal_your_memories">Your memories</h4>
+        <div id="journalFeed" class="journal-grid">
+          <p class="text-sm text-muted" data-i18n="journal_loading">Loading...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Read view modal -->
+  <div id="journalModalOverlay" class="journal-modal-overlay" onclick="closeEntryOnOverlay(event)">
+    <div class="journal-modal">
+      <button type="button" class="journal-modal-close" onclick="closeEntryModal()" aria-label="Close" data-i18n-label="journal_close_label">✕</button>
+      <div id="journalModalContent"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/journal.js"></script>
+</body>
+</html>

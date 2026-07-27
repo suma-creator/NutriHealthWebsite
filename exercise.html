@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exercise — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nav_exercise">Exercise</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="exercise_subtitle">Choose a workout style and get a short plan you can do anywhere.</p>
+
+        <div id="exerciseSmartCard" class="card mb-24" style="display:none;">
+          <div class="flex-between" style="align-items:flex-start;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h4 style="margin:0;" data-i18n="exercise_recommended_title">✨ Recommended for you</h4>
+              <div class="text-sm text-muted mt-6" id="exerciseRecommendReason"></div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="exerciseUseRecommendedBtn" data-i18n="exercise_use_this_plan">Use this plan</button>
+          </div>
+        </div>
+
+        <div id="exerciseStreakCard" class="card mb-24">
+          <div class="grid grid-3" style="gap:16px;">
+            <div>
+              <div class="text-sm text-muted" data-i18n="exercise_streak_label">Workout streak</div>
+              <div style="font-weight:800;font-size:1.4rem;" id="exerciseStreakValue">—</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted" data-i18n="exercise_today_minutes_label">Today's minutes</div>
+              <div style="font-weight:800;font-size:1.4rem;" id="exerciseTodayMinutes">—</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted" data-i18n="exercise_today_calories_label">Today's calories</div>
+              <div style="font-weight:800;font-size:1.4rem;" id="exerciseTodayCalories">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="exerciseGrid" class="grid grid-single" style="gap:24px;align-items:start;">
+          <div class="card">
+            <div class="form-group">
+              <label class="form-label" for="goalSelect" data-i18n="exercise_goal_label">Your fitness goal</label>
+              <select id="goalSelect" class="form-select">
+    <option value="" data-i18n="exercise_select_goal">Select Your Goal</option>
+
+    <option value="weightLoss" data-i18n="goal_weight_loss">🔥 Weight Loss</option>
+    <option value="muscleGain" data-i18n="goal_muscle_gain">💪 Muscle Gain</option>
+    <option value="strength" data-i18n="goal_strength">🏋️ Strength Training</option>
+    <option value="cardio" data-i18n="goal_cardio">❤️ Cardio Fitness</option>
+    <option value="hiit" data-i18n="goal_hiit">⚡ HIIT Workout</option>
+    <option value="core" data-i18n="goal_core">🎯 Core Strength</option>
+    <option value="flexibility" data-i18n="goal_flexibility">🤸 Flexibility</option>
+    <option value="yoga" data-i18n="goal_yoga">🧘 Yoga</option>
+    <option value="home" data-i18n="goal_home">🏠 Home Workout</option>
+    <option value="office" data-i18n="goal_office">💼 Office Workout</option>
+    <option value="beginner" data-i18n="goal_beginner">🌱 Beginner</option>
+    <option value="senior" data-i18n="goal_senior">👴 Senior Fitness</option>
+    <option value="pregnancy" data-i18n="goal_pregnancy">🤰 Prenatal Fitness</option>
+    <option value="relaxation" data-i18n="goal_relaxation">😌 Recovery &amp; Stretching</option>
+</select>
+              
+            </div>
+            <button id="exerciseBtn" class="btn btn-primary btn-block" data-i18n="exercise_show_plan_btn">Show plan</button>
+          </div>
+
+          <div class="card" id="exerciseResult" style="display:none;">
+            <h4 id="exerciseTitle">Plan</h4>
+            <div class="text-sm text-muted mt-8" id="exerciseDescription" data-i18n="exercise_select_prompt">Select a goal to see a workout.</div>
+            <div class="mt-24" id="exerciseList"></div>
+            <div class="mt-24" style="border-top:1px solid var(--color-border);padding-top:20px;" id="exerciseLogSection">
+              <div class="text-sm text-muted mb-8" data-i18n="exercise_how_did_it_go">How did today's workout go?</div>
+              <div class="flex gap-8" style="flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary btn-sm" id="exerciseCompletedBtn" data-i18n="exercise_status_completed_btn">✅ Completed</button>
+                <button type="button" class="btn btn-outline btn-sm" id="exercisePartialBtn" data-i18n="exercise_status_partial_btn">🟡 Partially completed</button>
+                <button type="button" class="btn btn-outline btn-sm" id="exerciseSkippedBtn" data-i18n="exercise_status_skipped_btn">❌ Skipped</button>
+              </div>
+
+              <div class="mt-16" id="exerciseDoneDetails" style="display:none;">
+                <div class="grid grid-2" style="gap:10px;">
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="exercise_duration_label">Duration (minutes)</label>
+                    <input type="number" min="0" class="form-input" id="exerciseDurationInput" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="exercise_calories_label">Calories burned (optional)</label>
+                    <input type="number" min="0" class="form-input" id="exerciseCaloriesInput" />
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" id="exerciseSaveDoneBtn" data-i18n="reminder_save">Save</button>
+              </div>
+
+              <div class="mt-16" id="exerciseSkipDetails" style="display:none;">
+                <div class="form-group">
+                  <label class="form-label" data-i18n="exercise_skip_reason_label">Reason for skipping</label>
+                  <input type="text" class="form-input" id="exerciseSkipReasonInput" data-i18n-placeholder="exercise_skip_reason_placeholder" placeholder="e.g. Not feeling well, too busy..." />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" data-i18n="exercise_notes_label">Personal notes (optional)</label>
+                  <input type="text" class="form-input" id="exerciseSkipNotesInput" />
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" id="exerciseSaveSkipBtn" data-i18n="reminder_save">Save</button>
+              </div>
+
+              <div class="text-sm text-muted mt-8" id="exerciseCompleteStatus"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/exercise.js"></script>
+</body>
+</html>

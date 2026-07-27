@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Chatbot — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nav_chatbot">AI Chatbot</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="chatbot_subtitle">Ask about nutrition, recipes, medicine, symptoms, BMI, calories, weight, and healthy lifestyle habits — what to do and what to avoid.</p>
+
+        <div class="card chat-panel" style="padding:24px;">
+          <div class="chat-header">
+            <div class="chat-header-avatar">🤖</div>
+            <div class="chat-header-info">
+              <h4>NutriHealth</h4>
+              <div class="chat-status"><span class="chat-status-dot" id="chatStatusDot"></span><span id="chatStatusText" data-i18n="chatbot_checking_connection">Checking connection…</span></div>
+            </div>
+            <button type="button" id="chatVoiceToggle" class="voice-toggle-btn" style="margin-left:auto;" aria-label="Toggle voice replies" data-i18n-label="chatbot_toggle_voice">🔇</button>
+          </div>
+
+          <div id="chatWindow" class="chat-window"></div>
+
+          <div class="chat-suggestions-label" data-i18n="chatbot_try_one">Try one of these:</div>
+          <div class="chat-suggestions" id="chatSuggestions">
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q1">What should I eat after a workout?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q2">How much water should I drink today?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q3">How can I improve my sleep quality?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q4">Can you suggest a healthy breakfast?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q5">What is a good meal plan for weight loss?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q6">Give me a high-protein dinner recipe</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q7">Suggest a diabetic-friendly meal plan</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q8">What does paracetamol actually do?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q9">I have a headache and mild fever, what should I do?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q10">Is my BMI healthy and what should I do about it?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q11">How many calories should I eat to lose weight?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q12">What foods should I avoid at night?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q13">How do I book a doctor appointment in this app?</button>
+            <button type="button" class="btn btn-outline btn-sm chat-suggestion-chip quick-question" data-i18n="chatbot_q14">Build me a beginner 3-day workout split</button>
+          </div>
+
+          <div id="chatVoiceStopBar" class="voice-stop-bar" style="display:none;">
+            <button type="button" id="chatStopTalkingBtn" class="btn btn-outline btn-sm" data-i18n="chatbot_stop_talking">⏹️ Stop talking</button>
+          </div>
+
+          <form id="chatForm" class="chat-input-bar">
+            <button type="button" id="chatVoiceInputBtn" class="btn btn-outline voice-btn" aria-label="Start voice input" data-i18n-label="chatbot_start_voice">🎤</button>
+            <input class="form-input" id="chatInput" type="text" placeholder="Ask about health, food, symptoms, BMI…" data-i18n-placeholder="chatbot_input_placeholder" autocomplete="off" required />
+            <button class="btn btn-primary chat-send-btn" type="submit" aria-label="Send message" data-i18n-label="chatbot_send_message">➤</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

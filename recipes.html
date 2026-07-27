@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Recipes — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="nav_recipes">Recipes</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="recipes_subtitle">Browse healthy meals chosen for balanced nutrition and easy preparation.</p>
+
+        <div class="card" style="padding:24px;">
+          <form id="recipeSearchForm" class="grid grid-2" style="gap:16px;align-items:end;">
+            <div>
+              <label class="form-label" for="recipeSearchInput" data-i18n="recipes_search_label">Search recipes</label>
+              <input class="form-input" type="search" id="recipeSearchInput" placeholder="e.g. high protein, vegetarian, quick dinner" />
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;min-width:140px;" data-i18n="recipes_search_btn">Search</button>
+          </form>
+        </div>
+
+        <div class="card mt-24">
+          <h4 data-i18n="recipes_suggestions_heading">Search suggestions</h4>
+          <p class="text-sm text-muted mt-8" data-i18n="recipes_suggestions_hint">Try searching by goal, ingredient, or meal type.</p>
+          <div class="chips mt-12" style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" class="chip" data-recipe="high-protein" data-i18n="chip_high_protein">High-protein</button>
+            <button type="button" class="chip" data-recipe="low-carb" data-i18n="chip_low_carb">Low-carb</button>
+            <button type="button" class="chip" data-recipe="vegetarian" data-i18n="chip_vegetarian">Vegetarian</button>
+            <button type="button" class="chip" data-recipe="vegan" data-i18n="chip_vegan">Vegan</button>
+            <button type="button" class="chip" data-recipe="breakfast" data-i18n="chip_breakfast">Breakfast</button>
+            <button type="button" class="chip" data-recipe="meal prep" data-i18n="chip_meal_prep">Meal prep</button>
+            <button type="button" class="chip" data-recipe="quick" data-i18n="chip_quick">Quick</button>
+          </div>
+        </div>
+
+        <div id="recipeResults" class="grid grid-1 mt-24" style="gap:24px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/recipes.js"></script>
+</body>
+</html>

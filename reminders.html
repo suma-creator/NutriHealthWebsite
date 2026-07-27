@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reminder Center — NutriHealth</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Inline CSS guard for icon side-by-side alignment & button wrapping */
+    .reminder-card {
+      overflow: hidden;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    .reminder-card .card-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      width: 100%;
+    }
+    .reminder-card .header-left,
+    .reminder-card .flex-align-center {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+    }
+    .stat-icon {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      width: 42px !important;
+      height: 42px !important;
+      min-width: 42px !important;
+      border-radius: 12px;
+      background-color: var(--color-surface-raised, rgba(255, 255, 255, 0.08));
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .stat-icon.icon-blue { background-color: rgba(59, 130, 246, 0.15); }
+    .stat-icon.icon-amber { background-color: rgba(245, 158, 11, 0.15); }
+    .stat-icon.icon-coral { background-color: rgba(244, 63, 94, 0.15); }
+    .stat-icon.icon-mint { background-color: rgba(16, 185, 129, 0.15); }
+    .stat-icon.icon-purple { background-color: rgba(147, 51, 234, 0.15); }
+
+    .reminder-status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      margin-left: 4px;
+    }
+    .reminder-card .btn-group,
+    .reminder-card .flex-wrap {
+      display: flex;
+      flex-wrap: wrap !important;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell" id="appShell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body container py-4">
+        <div class="mb-4">
+          <h2 class="page-title" data-i18n="reminder_center_title">🔔 Reminder Center</h2>
+          <p class="text-sm text-muted mt-2 mb-4" data-i18n="reminder_center_subtitle">Manage all your health reminders in one place.</p>
+        </div>
+
+        <div class="grid grid-2 gap-4" id="reminderGrid">
+
+          <!-- 1. WATER REMINDER CARD -->
+          <div class="card reminder-card" data-type="water">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-blue">💧</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="reminder_water_title">Water Reminder</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span data-i18n="reminder_status_label">Status:</span>
+                    <span class="reminder-status-badge" data-role="status">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-role="enable-toggle" checked />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="reminder_next_label">Next Reminder Time</span>
+                <div class="text-lg font-bold" data-role="next-time">Today at 4:45 AM</div>
+              </div>
+
+              <!-- Button Row -->
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline" data-role="edit-btn" data-i18n="reminder_edit">✏️ Edit</button>
+                <button type="button" class="btn btn-sm btn-outline" id="waterSkipTodayBtn">⏭️ Skip today</button>
+                <button type="button" class="btn btn-sm btn-outline" id="waterPauseBtn" data-i18n="reminder_pause_btn">⏸️ Pause reminders</button>
+              </div>
+
+              <!-- Edit Primary Time Row -->
+              <div class="reminder-edit-row edit-row mt-3" data-role="edit-row" style="display: none; background: var(--color-surface-raised, #f8f9fa); padding: 12px; border-radius: 8px;">
+                <label class="text-xs text-muted d-block mb-1">Set Primary Time</label>
+                <div class="flex-align-center gap-2 flex-wrap">
+                  <input type="time" class="form-control form-input form-control-sm" data-role="time-input" />
+                  <div class="flex gap-2">
+                    <button type="button" class="btn btn-sm btn-primary" data-role="save-btn" data-i18n="reminder_save">Save</button>
+                    <button type="button" class="btn btn-sm btn-ghost" data-role="cancel-btn" data-i18n="reminder_cancel">Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-3" style="border: 0; border-top: 1px solid var(--color-border, #e5e7eb);">
+
+              <!-- Extra Times Section -->
+              <div class="extra-times-section">
+                <span class="text-xs text-muted d-block font-semibold mb-2" data-i18n="reminder_extra_times_label">Extra times today</span>
+                <div data-role="extra-times-list" class="mt-2"></div>
+
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline" data-role="add-time-btn" data-i18n="reminder_add_time">+ Add another time</button>
+                </div>
+
+                <!-- Add Extra Time Row -->
+                <div class="add-time-row reminder-edit-row mt-2" data-role="add-time-row" style="display: none; background: var(--color-surface-raised, #f8f9fa); padding: 10px; border-radius: 8px;">
+                  <div class="flex-align-center gap-2 mb-2 flex-wrap">
+                    <input type="time" class="form-control form-input form-control-sm" data-role="add-time-input" />
+                    <input type="text" class="form-control form-input form-control-sm" data-role="add-time-label" data-i18n-placeholder="reminder_time_label_placeholder" placeholder="Label (optional)" />
+                  </div>
+                  <div class="flex-between align-center gap-2">
+                    <button type="button" class="btn btn-sm btn-ghost" data-role="add-time-cancel" data-i18n="reminder_cancel">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-role="add-time-save" data-i18n="reminder_save">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. MEAL REMINDER CARD -->
+          <div class="card reminder-card" data-type="meal">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-amber">🍽️</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="reminder_meal_title">Meal Reminder</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span data-i18n="reminder_status_label">Status:</span>
+                    <span class="reminder-status-badge" data-role="status">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-role="enable-toggle" checked />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="reminder_next_label">Next Reminder Time</span>
+                <div class="text-lg font-bold" data-role="next-time">Today at 4:56 AM</div>
+              </div>
+
+              <!-- Button Row -->
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline" data-role="edit-btn" data-i18n="reminder_edit">✏️ Edit</button>
+                <button type="button" class="btn btn-sm btn-outline" id="mealSkipTodayBtn">⏭️ Skip today</button>
+                <button type="button" class="btn btn-sm btn-outline" id="mealPauseBtn" data-i18n="reminder_pause_btn">⏸️ Pause reminders</button>
+              </div>
+
+              <!-- Edit Primary Time Row -->
+              <div class="reminder-edit-row edit-row mt-3" data-role="edit-row" style="display: none; background: var(--color-surface-raised, #f8f9fa); padding: 12px; border-radius: 8px;">
+                <label class="text-xs text-muted d-block mb-1">Set Primary Time</label>
+                <div class="flex-align-center gap-2 flex-wrap">
+                  <input type="time" class="form-control form-input form-control-sm" data-role="time-input" />
+                  <div class="flex gap-2">
+                    <button type="button" class="btn btn-sm btn-primary" data-role="save-btn" data-i18n="reminder_save">Save</button>
+                    <button type="button" class="btn btn-sm btn-ghost" data-role="cancel-btn" data-i18n="reminder_cancel">Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-3" style="border: 0; border-top: 1px solid var(--color-border, #e5e7eb);">
+
+              <!-- Scheduled Meals Section -->
+              <div class="extra-times-section">
+                <span class="text-xs text-muted d-block font-semibold mb-2" data-i18n="reminder_scheduled_meals_today">Scheduled Meals Today</span>
+                <div data-role="extra-times-list" class="mt-2"></div>
+
+                <div class="mt-2">
+                  <button type="button" class="btn btn-sm btn-outline" data-role="add-time-btn" data-i18n="reminder_add_meal_time">+ Add Meal Time</button>
+                </div>
+
+                <!-- Add Meal Time Row -->
+                <div class="add-time-row reminder-edit-row mt-2" data-role="add-time-row" style="display: none; background: var(--color-surface-raised, #f8f9fa); padding: 10px; border-radius: 8px;">
+                  <div class="form-group mb-2">
+                    <label class="form-label text-xs text-muted d-block">Meal Category</label>
+                    <select class="form-select form-control form-control-sm" data-role="add-meal-category">
+                      <option value="breakfast">🥞 Breakfast</option>
+                      <option value="lunch">🥗 Lunch</option>
+                      <option value="dinner">🍲 Dinner</option>
+                      <option value="snack">🍎 Snack</option>
+                      <option value="pre_workout">🏋️ Pre-workout meal</option>
+                      <option value="post_workout">🥤 Post-workout meal</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group mb-2">
+                    <label class="form-label text-xs text-muted d-block">Time</label>
+                    <input type="time" class="form-control form-input form-control-sm" data-role="add-time-input" />
+                  </div>
+
+                  <div class="flex-between align-center gap-2 mt-3">
+                    <button type="button" class="btn btn-sm btn-ghost" data-role="add-time-cancel" data-i18n="reminder_cancel">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" data-role="add-time-save" data-i18n="reminder_save">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. EXERCISE REMINDER CARD -->
+          <div class="card reminder-card" data-type="exercise">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-coral">🏃</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="reminder_exercise_title">Exercise Reminder</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span data-i18n="reminder_status_label">Status:</span>
+                    <span class="reminder-status-badge" data-role="status">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-role="enable-toggle" checked />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="reminder_next_label">Next Workout Time</span>
+                <div class="text-lg font-bold" data-role="next-time">--:--</div>
+              </div>
+
+              <!-- Button Row -->
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline" data-role="edit-btn" data-i18n="reminder_edit">✏️ Edit</button>
+                <button type="button" class="btn btn-sm btn-outline" id="exerciseSkipTodayBtn">⏭️ Undo Skip</button>
+                <button type="button" class="btn btn-sm btn-outline" id="exercisePauseBtn" data-i18n="reminder_pause_btn">⏸️ Pause reminders</button>
+              </div>
+
+              <hr class="my-3" style="border: 0; border-top: 1px solid var(--color-border, #e5e7eb);">
+
+              <!-- Extra Workout Times Section -->
+              <div class="extra-times-section">
+                <span class="text-xs text-muted d-block font-semibold mb-2" data-i18n="reminder_extra_times_label">Extra workout times today</span>
+                <div data-role="extra-times-list" class="mt-2"></div>
+                <button type="button" class="btn btn-sm btn-outline mt-2" data-role="add-time-btn" data-i18n="reminder_add_time">+ Add another time</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. SLEEP REMINDER CARD -->
+          <div class="card reminder-card" data-type="sleep">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-mint">😴</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="reminder_sleep_title">Sleep Schedule</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span data-i18n="reminder_status_label">Status:</span>
+                    <span class="reminder-status-badge" data-role="status">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-role="enable-toggle" checked />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="reminder_next_label">Next Bedtime</span>
+                <div class="text-lg font-bold" data-role="next-time">3:56 AM</div>
+              </div>
+
+              <!-- Button Row -->
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline" data-role="edit-btn" data-i18n="reminder_edit">✏️ Edit</button>
+                <button type="button" class="btn btn-sm btn-outline" id="sleepSkipTodayBtn">⏭️ Skip today</button>
+                <button type="button" class="btn btn-sm btn-outline" id="sleepPauseBtn" data-i18n="reminder_pause_btn">⏸️ Pause reminders</button>
+              </div>
+
+              <hr class="my-3" style="border: 0; border-top: 1px solid var(--color-border, #e5e7eb);">
+
+              <div class="extra-times-section">
+                <span class="text-xs text-muted d-block font-semibold" data-i18n="reminder_extra_times_label">Extra times today</span>
+                <div data-role="extra-times-list" class="mt-2"></div>
+                <button type="button" class="btn btn-sm btn-outline mt-2" data-role="add-time-btn" data-i18n="reminder_add_time">+ Add another time</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. DOCTOR APPOINTMENT REMINDER CARD -->
+          <div class="card reminder-card" data-type="doctor">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-purple">🩺</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="doctor_appointment_card_title">Doctor Appointment</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span>Status:</span>
+                    <span class="reminder-status-badge" id="doctorStatusBadge" data-i18n="reminder_status_on">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="doctorToggle" checked onchange="toggleReminder('doctor')" />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="doctor_next_scheduled_visit">Next Scheduled Visit</span>
+                <div class="text-lg font-bold" id="doctorNextTime">Loading...</div>
+              </div>
+
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <a href="appointment.html" class="btn btn-sm btn-outline" data-i18n="doctor_schedule_visit_btn">📅 Schedule Visit</a>
+                <button type="button" class="btn btn-sm btn-outline" id="doctorPauseBtn" data-i18n="reminder_pause_btn" onclick="pauseReminder('doctor')">⏸️ Pause reminders</button>
+              </div>
+
+              <hr class="my-3" style="border: 0; border-top: 1px solid var(--color-border, #e5e7eb);">
+
+              <div>
+                <span class="text-xs text-muted d-block font-semibold mb-2" data-i18n="doctor_upcoming_visits_today">Upcoming Visits Today</span>
+                <div id="doctorAppointmentsList" class="flex-col gap-2">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. MEDICINE REMINDER CARD -->
+          <div class="card reminder-card" data-type="medicine">
+            <div class="card-header flex-between align-center">
+              <div class="flex-align-center gap-3">
+                <span class="stat-icon icon-coral">💊</span>
+                <div>
+                  <h4 class="card-title m-0" data-i18n="reminder_medicine_title">Medicine Reminder</h4>
+                  <div class="text-sm text-muted mt-1">
+                    <span data-i18n="reminder_status_label">Status:</span>
+                    <span class="reminder-status-badge" data-role="status">On</span>
+                  </div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-role="enable-toggle" checked />
+                <span class="switch-track slider round"></span>
+              </label>
+            </div>
+
+            <div class="card-body mt-3">
+              <div>
+                <span class="text-xs text-muted d-block" data-i18n="reminder_next_label">Next Dose Time</span>
+                <div class="text-lg font-bold" data-role="next-time">--:--</div>
+              </div>
+
+              <div class="mt-3 flex align-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-sm btn-outline" id="medicineSkipTodayBtn">⏭️ Skip today</button>
+                <button type="button" class="btn btn-sm btn-outline" id="medicinePauseBtn" data-i18n="reminder_pause_btn">⏸️ Pause reminders</button>
+              </div>
+
+              <p class="text-sm text-muted mt-3" data-i18n="reminder_medicine_note">Reminders directly sync with your active prescriptions schedule.</p>
+
+              <div class="mt-3">
+                <a href="medicine.html" class="btn btn-sm btn-outline" data-i18n="reminder_manage_medicines">Manage Medicine Schedule →</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="common.js" defer></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="appointment.js" defer></script>
+  <script src="reminders.js" defer></script>
+  <script src="js/reminders.js" defer></script>
+</body>
+</html>

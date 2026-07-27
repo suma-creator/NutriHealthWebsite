@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profile — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="profile_title">Profile</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="profile_subtitle">Update your name and view the account details stored in your profile.</p>
+
+        <div class="card" style="max-width:700px;">
+          <form id="profileForm">
+            <div class="grid grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="profileName" data-i18n="register_name_label">Full name</label>
+                <input class="form-input" type="text" id="profileName" required placeholder="Your name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profileEmail" data-i18n="login_email_label">Email address</label>
+                <input class="form-input" type="email" id="profileEmail" readonly />
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="profileAge" data-i18n="profile_age_label">Age</label>
+                <input class="form-input" type="number" id="profileAge" min="10" max="120" placeholder="e.g. 28" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profileGender" data-i18n="profile_gender_label">Gender</label>
+                <select class="form-select" id="profileGender">
+                  <option value="" data-i18n="profile_gender_select">Select gender</option>
+                  <option value="male" data-i18n="profile_gender_male">Male</option>
+                  <option value="female" data-i18n="profile_gender_female">Female</option>
+                  <option value="other" data-i18n="profile_gender_other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-2" style="gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="profileHeight" data-i18n="bmi_height_label">Height (cm)</label>
+                <input class="form-input" type="number" id="profileHeight" min="100" max="250" step="0.1" placeholder="e.g. 170" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profileWeight" data-i18n="bmi_weight_label">Weight (kg)</label>
+                <input class="form-input" type="number" id="profileWeight" min="30" max="200" step="0.1" placeholder="e.g. 70" />
+              </div>
+            </div>
+
+            <button class="btn btn-primary btn-block mt-16" type="submit" data-i18n="profile_save_btn">Save profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

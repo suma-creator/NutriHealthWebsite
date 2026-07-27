@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log In — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="auth-page">
+    <!-- ===== LEFT: brand visual ===== -->
+    <div class="auth-visual">
+      <span class="eyebrow" style="background:rgba(255,255,255,0.18);color:#fff;" data-i18n="login_visual_eyebrow">Welcome back</span>
+      <h2 class="mt-24" data-i18n="login_visual_title">Your health dashboard is exactly where you left it.</h2>
+      <p class="mt-16" data-i18n="login_visual_subtitle">Log in to see your BMI trends, water intake, sleep quality, and upcoming medicine reminders.</p>
+
+      <svg class="vitals-wave mt-32" viewBox="0 0 400 60" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="waveGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="100%" stop-color="#c6f6ea" />
+          </linearGradient>
+        </defs>
+        <path d="M0,30 L40,30 L55,10 L70,50 L85,30 L110,30 L125,15 L140,45 L155,30 L400,30" />
+      </svg>
+    </div>
+
+    <!-- ===== RIGHT: form ===== -->
+    <div class="auth-form-side">
+      <div class="auth-card">
+        <a href="index.html" class="brand mb-32" style="display:inline-flex;">
+          <span class="brand-mark">✚</span> NutriHealth
+        </a>
+
+        <h2 data-i18n="login_title">Log in to your account</h2>
+        <p class="mt-8"><span data-i18n="login_new_here">New here?</span> <a href="register.html" class="gradient-text" style="font-weight:600;" data-i18n="login_create_account_link">Create an account</a></p>
+
+        <form id="loginForm" class="mt-32" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" for="email" data-i18n="login_email_label">Email address</label>
+            <div class="input-icon-wrap">
+              <span class="icon">✉️</span>
+              <input class="form-input" type="email" id="email" required placeholder="you@example.com" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="flex-between">
+              <label class="form-label" for="password" data-i18n="login_password_label">Password</label>
+              <a href="forgot-password.html" class="text-sm gradient-text" style="font-weight:600;" data-i18n="login_forgot_link">Forgot password?</a>
+            </div>
+            <div class="input-icon-wrap" style="position:relative;">
+              <span class="icon">🔒</span>
+              <input class="form-input" type="password" id="password" required placeholder="••••••••" minlength="6" />
+              <button type="button" class="password-toggle" data-target="password" data-i18n="login_show_password">Show</button>
+            </div>
+          </div>
+
+          <button type="submit" id="loginBtn" class="btn btn-primary btn-block mt-24" data-i18n="login_submit">Sign in</button>
+        </form>
+
+        <p class="text-sm text-center mt-24 text-muted" data-i18n="auth_terms_notice">
+          By continuing you agree to our Terms of Service and Privacy Policy.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    redirectIfLoggedIn();
+
+    // Show/hide password
+    document.querySelectorAll(".password-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const input = document.getElementById(btn.dataset.target);
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        btn.textContent = isPassword ? t("login_hide_password", "Hide") : t("login_show_password", "Show");
+      });
+    });
+  </script>
+</body>
+</html>

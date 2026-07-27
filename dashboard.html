@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="dashboard-page">
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <div class="flex-between mb-24" style="flex-wrap:wrap;gap:12px;">
+          <div>
+            <h2><span data-i18n="dashboard_welcome">Welcome back,</span> <span class="js-user-name gradient-text">...</span> 👋</h2>
+            <p class="text-sm mt-8" data-i18n="dashboard_subtitle">Here's your health snapshot for today.</p>
+          </div>
+          <a href="bmi.html" class="btn btn-primary" data-i18n="dashboard_log_reading">+ Log a new reading</a>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="grid grid-4 mb-24">
+          <div class="stat-card">
+            <span class="stat-icon icon-teal">⚖️</span>
+            <div class="stat-value" id="statBmi">—</div>
+            <div class="stat-label"><span data-i18n="dashboard_stat_bmi">BMI</span> · <span id="statBmiCategory" data-i18n="dashboard_no_data_yet">no data yet</span></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon icon-blue">💧</span>
+            <div class="stat-value" id="statWater">—</div>
+            <div class="stat-label" data-i18n="dashboard_stat_water">Water intake today</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon icon-mint">😴</span>
+            <div class="stat-value" id="statSleep">—</div>
+            <div class="stat-label" data-i18n="dashboard_stat_sleep">Last night's sleep</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon icon-coral">⏰</span>
+            <div class="stat-value" id="statReminders">—</div>
+            <div class="stat-label" data-i18n="dashboard_stat_reminders">Upcoming reminders</div>
+          </div>
+        </div>
+
+        <!-- Phase 6 — Today's Summary + Current Streak -->
+        <div class="grid grid-2 mb-24" style="grid-template-columns:1.4fr 1fr;">
+          <div class="card">
+            <div class="flex-between mb-16">
+              <h4 data-i18n="dashboard_today_summary_title">Today's Summary</h4>
+              <span class="text-sm text-muted" id="todaySummaryDate"></span>
+            </div>
+            <div id="todaySummaryList" class="today-summary-grid">
+              <p class="text-sm text-muted" data-i18n="dashboard_loading">Loading...</p>
+            </div>
+          </div>
+
+          <div class="card flex-col" style="justify-content:center;align-items:center;text-align:center;">
+            <h4 class="mb-8" data-i18n="dashboard_current_streak_title">Current Streak</h4>
+            <div class="streak-flame" id="streakFlame">🔥</div>
+            <div class="stat-value" id="statStreak" style="font-size:2.2rem;">—</div>
+            <div class="stat-label" data-i18n="dashboard_streak_days">day(s) logged in a row</div>
+          </div>
+        </div>
+
+        <!-- Phase 6 — Health Score Calendar Preview + Monthly Progress -->
+        <div class="grid grid-2 mb-24" style="grid-template-columns:1fr 1fr;">
+          <div class="card">
+            <div class="flex-between mb-16">
+              <h4 data-i18n="dashboard_calendar_preview_title">Health Score Calendar Preview</h4>
+              <a href="health-calendar.html" class="text-sm gradient-text" style="font-weight:600;" data-i18n="dashboard_view_calendar">Full calendar →</a>
+            </div>
+            <div id="calendarPreviewStrip" class="cal-preview-strip">
+              <p class="text-sm text-muted" data-i18n="dashboard_loading">Loading...</p>
+            </div>
+            <div class="cal-legend mt-16" style="font-size:0.72rem;">
+              <span class="cal-legend-item">🟢 <span data-i18n="cal_status_excellent">Excellent Day</span></span>
+              <span class="cal-legend-item">🟡 <span data-i18n="cal_status_good">Good Day</span></span>
+              <span class="cal-legend-item">🟠 <span data-i18n="cal_status_average">Average Day</span></span>
+              <span class="cal-legend-item">🔴 <span data-i18n="cal_status_needs_improvement">Needs Improvement</span></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="flex-between mb-16">
+              <h4 data-i18n="dashboard_monthly_progress_title">Monthly Progress</h4>
+              <span class="text-sm text-muted" id="monthlyProgressLabel"></span>
+            </div>
+            <div id="monthlyProgressList" class="flex-col gap-12">
+              <p class="text-sm text-muted" data-i18n="dashboard_loading">Loading...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Health Status -->
+        <div class="card mb-24">
+          <div class="flex-between mb-16" style="flex-wrap:wrap;gap:12px;">
+            <h4 data-i18n="dashboard_ai_status_title">AI Health Status</h4>
+            <a href="symptoms.html" class="text-sm gradient-text" style="font-weight:600;" data-i18n="dashboard_run_new_check">Run a new check →</a>
+          </div>
+          <div class="grid grid-4" style="gap:14px;">
+            <div class="stat-card" style="padding:16px;">
+              <div class="stat-value" id="statHealthScore" style="font-size:1.5rem;">—</div>
+              <div class="stat-label" data-i18n="dashboard_health_score">Health score</div>
+            </div>
+            <div class="stat-card" style="padding:16px;">
+              <div class="stat-value" id="statLatestDisease" style="font-size:1rem;">—</div>
+              <div class="stat-label" data-i18n="dashboard_latest_condition">Latest possible condition</div>
+            </div>
+            <div class="stat-card" style="padding:16px;">
+              <div id="statRiskLevel" class="stat-value" style="font-size:1.1rem;">—</div>
+              <div class="stat-label" data-i18n="dashboard_risk_level">Risk level</div>
+            </div>
+            <div class="stat-card" style="padding:16px;">
+              <div class="stat-value" id="statLatestReport" style="font-size:1rem;">—</div>
+              <div class="stat-label" data-i18n="dashboard_latest_report">Latest report</div>
+            </div>
+          </div>
+          <div class="mt-16" id="severityTrendBox" style="display:none;">
+            <div class="text-sm text-muted mb-8" data-i18n="dashboard_severity_trend">Severity trend (last checks)</div>
+            <div id="severityTrendChart"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 mb-24" style="grid-template-columns:1.3fr 1fr;">
+          <!-- Recent symptom history -->
+          <div class="card">
+            <div class="flex-between mb-16">
+              <h4 data-i18n="dashboard_recent_symptom_checks">Recent symptom checks</h4>
+              <a href="symptoms.html" class="text-sm gradient-text" style="font-weight:600;" data-i18n="dashboard_open_checker">Open checker →</a>
+            </div>
+            <div id="symptomHistory" class="flex-col gap-12">
+              <p class="text-sm text-muted" data-i18n="dashboard_loading">Loading...</p>
+            </div>
+          </div>
+
+          <!-- Upcoming medicine reminders -->
+          <div class="card">
+            <div class="flex-between mb-16">
+              <h4 data-i18n="dashboard_medicine_reminders">Medicine reminders</h4>
+              <a href="medicine.html" class="text-sm gradient-text" style="font-weight:600;" data-i18n="dashboard_manage">Manage →</a>
+            </div>
+            <div id="reminderList" class="flex-col gap-12">
+              <p class="text-sm text-muted" data-i18n="dashboard_loading">Loading...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

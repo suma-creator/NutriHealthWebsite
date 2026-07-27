@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grocery Planner — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="grocery_title">🛒 Grocery Planner</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="grocery_subtitle">Automatically builds a shopping list from the ingredients in your active diet plan.</p>
+
+        <!-- Empty state: no diet plan yet -->
+        <div id="groceryNoPlan" class="card mb-24" style="display:none;">
+          <h4 data-i18n="grocery_noplan_heading">No diet plan yet</h4>
+          <p class="text-sm text-muted mt-8 mb-16" data-i18n="grocery_noplan_text">Generate a diet plan first, then come back here to build your grocery list from it.</p>
+          <a href="diet-plan.html" class="btn btn-primary" data-i18n="grocery_noplan_btn">Go to Diet Plan Generator</a>
+        </div>
+
+        <!-- Active plan summary -->
+        <div id="groceryPlanCard" class="card mb-24" style="display:none;">
+          <div class="flex-between" style="flex-wrap:wrap;gap:16px;">
+            <div>
+              <h4><span data-i18n="grocery_active_plan">Your active diet plan</span> <span class="text-sm text-muted" style="font-weight:400;">· <span data-i18n="grocery_goal_word">Goal:</span> <span id="groceryPlanGoal">—</span></span></h4>
+              <ul class="text-sm mt-8" id="groceryPlanMeals" style="list-style:none;padding:0;display:grid;gap:4px;"></ul>
+            </div>
+            <button id="groceryGenerateBtn" class="btn btn-primary" data-i18n="grocery_generate_btn">Generate Grocery List</button>
+          </div>
+        </div>
+
+        <!-- Shopping list -->
+        <div id="groceryListSection" style="display:none;">
+
+          <!-- Quick stats -->
+          <div class="grid grid-3 mb-24" id="groceryStatsRow">
+            <div class="card text-center">
+              <span class="stat-icon icon-blue">📦</span>
+              <div class="stat-value" id="groceryStatTotal">0</div>
+              <div class="stat-label" data-i18n="grocery_stat_total">Total items</div>
+            </div>
+            <div class="card text-center">
+              <span class="stat-icon icon-mint">✅</span>
+              <div class="stat-value" id="groceryStatChecked">0</div>
+              <div class="stat-label" data-i18n="grocery_stat_checked">Checked off</div>
+            </div>
+            <div class="card text-center">
+              <span class="stat-icon icon-amber">🗂️</span>
+              <div class="stat-value" id="groceryStatCategories">0</div>
+              <div class="stat-label" data-i18n="grocery_stat_categories">Categories</div>
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="grid-template-columns:1.6fr 1fr;align-items:start;gap:24px;">
+
+            <!-- Main: categorized item list -->
+            <div>
+              <div class="flex-between mb-16">
+                <h4 style="margin:0;" data-i18n="grocery_shopping_list">Shopping list</h4>
+                <div class="text-sm text-muted" id="groceryProgressText"></div>
+              </div>
+              <div class="progress-track mb-24"><div class="progress-fill" id="groceryProgressBar" style="width:0%;"></div></div>
+
+              <div id="groceryItemList">
+                <p class="text-sm text-muted" data-i18n="grocery_loading">Loading...</p>
+              </div>
+            </div>
+
+            <!-- Sidebar: add item + actions -->
+            <div class="flex-col gap-16" style="position:sticky;top:16px;">
+              <div class="card">
+                <h4 class="mb-16" data-i18n="grocery_add_custom_heading">Add a custom item</h4>
+                <form id="groceryAddForm">
+                  <div class="form-group">
+                    <label class="form-label" for="groceryCustomName" data-i18n="grocery_item_name_label">Item name</label>
+                    <input class="form-input" type="text" id="groceryCustomName" required data-i18n-placeholder="grocery_item_name_placeholder" placeholder="e.g. Dish soap" />
+                  </div>
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="groceryCustomQty" data-i18n="grocery_qty_label">Quantity (optional)</label>
+                    <input class="form-input" type="text" id="groceryCustomQty" data-i18n-placeholder="grocery_qty_placeholder" placeholder="e.g. 1 bottle" />
+                  </div>
+                  <button type="submit" class="btn btn-outline btn-block mt-16" data-i18n="grocery_add_item_btn">Add Item</button>
+                </form>
+              </div>
+
+              <div class="card">
+                <h4 class="mb-16" data-i18n="grocery_list_actions">List actions</h4>
+                <button id="groceryClearCheckedBtn" class="btn btn-ghost btn-block" data-i18n="grocery_clear_checked_btn">Clear checked items</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/grocery.js"></script>
+</body>
+</html>

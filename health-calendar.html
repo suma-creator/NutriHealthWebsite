@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Health Calendar — NutriHealth</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="pageLoader" class="page-loader"><div class="loader-pulse"></div></div>
+
+  <div class="app-shell">
+    <div id="sidebarContainer"></div>
+    <div class="sidebar-overlay"></div>
+
+    <div class="main-content">
+      <div id="topbarContainer"></div>
+
+      <div class="page-body">
+        <h2 data-i18n="cal_title">📅 Health Calendar</h2>
+        <p class="text-sm mt-8 mb-24" data-i18n="cal_subtitle">Every day you use NutriHealth, summarized in one place. Click any day to see the full breakdown.</p>
+
+        <div class="cal-summary-strip" id="calSummaryStrip"></div>
+
+        <div class="card cal-card">
+          <div class="cal-toolbar">
+            <div class="cal-toolbar-nav">
+              <button type="button" class="btn btn-ghost btn-sm" id="calPrevBtn" aria-label="Previous month">‹</button>
+              <h4 id="calMonthLabel">Month Year</h4>
+              <button type="button" class="btn btn-ghost btn-sm" id="calNextBtn" aria-label="Next month">›</button>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm" id="calTodayBtn" data-i18n="cal_today_btn">Today</button>
+          </div>
+
+          <div class="cal-legend">
+            <span class="cal-legend-item">🟢 <span data-i18n="cal_status_excellent">Excellent Day</span></span>
+            <span class="cal-legend-item">🟡 <span data-i18n="cal_status_good">Good Day</span></span>
+            <span class="cal-legend-item">🟠 <span data-i18n="cal_status_average">Average Day</span></span>
+            <span class="cal-legend-item">🔴 <span data-i18n="cal_status_needs_improvement">Needs Improvement</span></span>
+            <span class="cal-legend-item">⚪ <span data-i18n="cal_status_no_data">No Data</span></span>
+          </div>
+
+          <div class="cal-filter-bar">
+            <div class="cal-search-box">
+              <input type="search" id="calSearchInput" class="form-input" data-i18n-placeholder="cal_search_placeholder" placeholder="Search meals, symptoms, appointments, notes…" />
+            </div>
+            <div class="cal-filter-chips" id="calFilterChips"></div>
+            <button type="button" class="btn btn-ghost btn-sm" id="calClearFiltersBtn" data-i18n="cal_clear_filters" style="display:none;">Clear</button>
+          </div>
+          <div class="cal-filter-status text-sm text-muted" id="calFilterStatus"></div>
+
+          <div id="calendarGrid" class="cal-grid-wrap"></div>
+        </div>
+
+        <div class="card cal-card mt-24">
+          <div class="cal-toolbar">
+            <h4 data-i18n="cal_analytics_title">📊 Trends &amp; Analytics</h4>
+            <div class="cal-period-toggle" id="calPeriodToggle">
+              <button type="button" class="chip chip-sm" data-period="weekly" data-i18n="cal_period_weekly">Weekly</button>
+              <button type="button" class="chip chip-sm chip-active" data-period="monthly" data-i18n="cal_period_monthly">Monthly</button>
+              <button type="button" class="chip chip-sm" data-period="yearly" data-i18n="cal_period_yearly">Yearly</button>
+            </div>
+          </div>
+          <div id="calAnalyticsCharts" class="cal-charts-grid"></div>
+        </div>
+        <div class="card cal-card mt-24">
+          <div class="cal-toolbar">
+            <div>
+              <h4 data-i18n="cal_reports_title">🧾 Export &amp; Reports</h4>
+              <p class="text-sm text-muted mt-4" data-i18n="cal_reports_subtitle">Export this month's data, or generate a full Monthly Health Report.</p>
+            </div>
+          </div>
+          <div class="cal-export-row">
+            <button type="button" class="btn btn-outline btn-sm" id="calExportCsvBtn">⬇ <span data-i18n="cal_export_csv">Export CSV</span></button>
+            <button type="button" class="btn btn-outline btn-sm" id="calExportExcelBtn">⬇ <span data-i18n="cal_export_excel">Export Excel</span></button>
+            <button type="button" class="btn btn-outline btn-sm" id="calExportPdfBtn">⬇ <span data-i18n="cal_export_pdf">Export PDF</span></button>
+            <button type="button" class="btn btn-primary btn-sm" id="calMonthlyReportBtn">📄 <span data-i18n="cal_generate_report">Generate Monthly Health Report</span></button>
+          </div>
+          <div class="form-hint mt-8" id="calExportStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day detail modal -->
+  <div class="cal-modal-overlay" id="calModalOverlay"></div>
+  <div class="cal-modal" id="calDayModal">
+    <div class="cal-modal-header">
+      <h4 id="calModalDate">Date</h4>
+      <button type="button" class="cal-modal-close" id="calModalCloseBtn" aria-label="Close">✕</button>
+    </div>
+    <div class="cal-modal-body" id="calModalBody"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/health-calendar.js"></script>
+  <script src="js/reports.js"></script>
+</body>
+</html>
