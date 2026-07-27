@@ -2187,47 +2187,49 @@ auth_terms_notice: "চালিয়ে গেলে আপনি আমাদ
     // ---- Login gaps ----
     login_show_password: "দেখান",
     login_hide_password: "লুকান",
+// ---- Landing page gaps ----
+landing_wellness_hub:"আপনার স্বাস্থ্য, আপনার নিয়ন্ত্রণে",
+landing_panel_heading: "স্বাস্থ্য পর্যবেক্ষণ এখন আরও সহজ, সুন্দর ও নির্ভর।",
+landing_panel_line1: "আপনার পুষ্টি লক্ষ্য ও দৈনিক খাদ্যগ্রহণ এক নজরে দেখুন।",
+landing_panel_line2: "পানির অনুস্মারক ও ঘুমের বিশ্লেষণ সহজেই ট্র্যাক করুন।",
+landing_panel_line3: "স্মার্ট ওষুধের অনুস্মারক আপনাকে সঠিক সময়ে মনে করিয়ে দেবে।",
+landing_what_you_get: "আপনি যা পাবেন",
+landing_one_dashboard: "আপনার সম্পূর্ণ স্বাস্থ্য ব্যবস্থাপনার জন্য একটি ড্যাশবোর্ড",
+landing_bmi_calc: "BMI ক্যালকুলেটর",
+landing_bmi_calc_desc: "আপনার BMI হিসাব করুন, ইতিহাস সংরক্ষণ করুন এবং স্বাস্থ্যকর পরামর্শ পান।",
+landing_symptom_checker: "লক্ষণ বিশ্লেষক",
+landing_symptom_checker_desc: "আপনার লক্ষণ নির্বাচন করুন এবং সম্ভাব্য স্বাস্থ্য সমস্যা ও করণীয় সম্পর্কে জানুন।",
+landing_nutrition_plans: "ব্যক্তিগত পুষ্টি পরিকল্পনা",
+landing_nutrition_plans_desc: "আপনার জন্য উপযোগী ক্যালোরি, প্রোটিন, কার্বোহাইড্রেট ও চর্বির লক্ষ্য নির্ধারণ করুন।",
+landing_medicine_reminders: "ওষুধের অনুস্মারক",
+landing_medicine_reminders_desc: "স্মার্ট অনুস্মারকের মাধ্যমে সময়মতো ওষুধ গ্রহণ নিশ্চিত করুন।",
+landing_see_all_features: "সব ১২টি ফিচার দেখুন →",
+landing_cta_heading: "আপনার সুস্থ জীবনের যাত্রা শুরু করতে প্রস্তুত?",
+landing_cta_subtitle: "বিনামূল্যে একটি অ্যাকাউন্ট খুলুন এবং এক মিনিটেরও কম সময়ে আপনার ব্যক্তিগত স্বাস্থ্য ড্যাশবোর্ড ব্যবহার শুরু করুন।",
+landing_create_free_account: "বিনামূল্যে অ্যাকাউন্ট খুলুন",
 
-    // ---- Landing page gaps ----
-    landing_wellness_hub: "আপনার সুস্থতার কেন্দ্র",
-    landing_panel_heading: "স্বাস্থ্য ট্র্যাকিং যা শান্ত ও স্পষ্ট মনে হয়।",
-    landing_panel_line1: "পুষ্টির লক্ষ্য ও দৈনিক গ্রহণ, স্পষ্টভাবে প্রদর্শিত।",
-    landing_panel_line2: "হাইড্রেশন অনুস্মারক ও ঘুমের অন্তর্দৃষ্টি, সহজীকৃত।",
-    landing_panel_line3: "ওষুধের সতর্কতা যা আপনার রুটিন ঠিক রাখে।",
-    landing_what_you_get: "আপনি যা পাবেন",
-    landing_one_dashboard: "আপনার সামগ্রিক সুস্থতার জন্য একটি ড্যাশবোর্ড",
-    landing_bmi_calc: "BMI ক্যালকুলেটর",
-    landing_bmi_calc_desc: "উপযুক্ত স্বাস্থ্য পরামর্শসহ সময়ের সাথে আপনার BMI ট্র্যাক করুন।",
-    landing_symptom_checker: "লক্ষণ পরীক্ষক",
-    landing_symptom_checker_desc: "লক্ষণ নির্বাচন করুন এবং সম্ভাব্য অবস্থা ও পরবর্তী পদক্ষেপ জানুন।",
-    landing_nutrition_plans: "পুষ্টি পরিকল্পনা",
-    landing_nutrition_plans_desc: "ব্যক্তিগতকৃত ক্যালোরি, প্রোটিন, কার্বোহাইড্রেট ও চর্বির লক্ষ্য।",
-    landing_medicine_reminders: "ওষুধের অনুস্মারক",
-    landing_medicine_reminders_desc: "স্মার্ট অনুস্মারকের সাহায্যে কোনো ডোজ মিস করবেন না।",
-    landing_see_all_features: "সব ১২টি ফিচার দেখুন →",
-    landing_cta_heading: "আপনার স্বাস্থ্যের নিয়ন্ত্রণ নিতে প্রস্তুত?",
-    landing_cta_subtitle: "একটি বিনামূল্যে অ্যাকাউন্ট তৈরি করুন এবং এক মিনিটেরও কম সময়ে আপনার ব্যক্তিগতকৃত ড্যাশবোর্ড পান।",
-    landing_create_free_account: "বিনামূল্যে অ্যাকাউন্ট তৈরি করুন",
+// ---- Exercise JS chrome ----
+exercise_done_today: "✅ আজকের ব্যায়াম সম্পন্ন",
+exercise_logged_today: "আজকের ব্যায়াম সংরক্ষিত হয়েছে",
+exercise_nice_work: "দারুণ করেছেন!",
+exercise_saving: "সংরক্ষণ করা হচ্ছে...",
+exercise_toast_logged: "আজকের ব্যায়াম সফলভাবে লগ করা হয়েছে!",
 
-    // ---- Exercise JS chrome ----
-    exercise_done_today: "✅ আজকের জন্য সম্পন্ন",
-    exercise_logged_today: "আজ লগ করা হয়েছে",
-    exercise_nice_work: "চমৎকার কাজ!",
-    exercise_saving: "সংরক্ষণ করা হচ্ছে...",
-    exercise_toast_logged: "আজকের ওয়ার্কআউট লগ করা হয়েছে!",
+// ---- Shared BMI category helper (ui.js) ----
+bmi_cat_underweight: "স্বল্প ওজন",
+bmi_tip_underweight: "পুষ্টিকর খাবার খান এবং অনিচ্ছাকৃতভাবে ওজন কমে গেলে চিকিৎসকের পরামর্শ নিন।",
 
-    // ---- Shared BMI category helper (ui.js) ----
-    bmi_cat_underweight: "কম ওজন",
-    bmi_tip_underweight: "পুষ্টিকর খাবার যোগ করার কথা বিবেচনা করুন এবং ওজন হ্রাস অনিচ্ছাকৃত হলে একজন ডাক্তারের সাথে কথা বলুন।",
-    bmi_cat_normal: "স্বাভাবিক ওজন",
-    bmi_tip_normal: "চমৎকার পরিসীমা — একটি সুষম খাদ্য এবং নিয়মিত কার্যকলাপ বজায় রাখুন।",
-    bmi_cat_overweight: "অতিরিক্ত ওজন",
-    bmi_tip_overweight: "খাদ্য ও কার্যকলাপে ছোট, নিয়মিত পরিবর্তন একটি স্বাস্থ্যকর পরিসীমার দিকে যেতে সাহায্য করতে পারে।",
-    bmi_cat_obese: "স্থূল",
-    bmi_tip_obese: "একটি নিরাপদ, ব্যক্তিগতকৃত পরিকল্পনা তৈরি করতে একজন স্বাস্থ্যসেবা প্রদানকারীর সাথে পরামর্শ করার কথা বিবেচনা করুন।",
+bmi_cat_normal: "স্বাভাবিক ওজন",
+bmi_tip_normal: "চমৎকার! সুষম খাদ্য গ্রহণ করুন এবং নিয়মিত ব্যায়াম চালিয়ে যান।",
 
-    // ---- Symptoms gap fix ----
-    symptoms_stop_talking: "⏹️ কথা বলা বন্ধ করুন",
+bmi_cat_overweight: "অতিরিক্ত ওজন",
+bmi_tip_overweight: "স্বাস্থ্যকর খাদ্যাভ্যাস ও নিয়মিত শারীরিক কার্যকলাপ ধীরে ধীরে ওজন নিয়ন্ত্রণে সাহায্য করবে।",
+
+bmi_cat_obese: "স্থূলতা",
+bmi_tip_obese: "নিরাপদ ও ব্যক্তিগত স্বাস্থ্য পরিকল্পনার জন্য একজন চিকিৎসক বা পুষ্টিবিদের পরামর্শ নিন।",
+
+// ---- Symptoms gap fix ----
+symptoms_stop_talking: "⏹️ কথা বলা বন্ধ করুন",
 
     // ---- Symptom checklist labels (display only) ----
     symptom_fever: "জ্বর",
